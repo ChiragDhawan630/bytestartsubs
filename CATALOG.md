@@ -13,6 +13,17 @@ This document tracks all proposed and applied changes to the ByteStart Subscript
 
 ---
 
+## [3.1.1] - 2026-01-02
+
+### Fixed
+- **Plans Database Schema**: Added missing `price_color` column to `plans` table (Schema v6 migration).
+- **Homepage UI**: Fixed "Could not connect to server" error when no plans exist; now shows a friendly "No Plans Available Yet" message.
+
+### Changed
+- **Database Migration**: Updated `migrate.js` to include version 6 migration for `price_color` column backfill.
+
+---
+
 ## [3.1.0] - 2026-01-02
 
 ### Added
