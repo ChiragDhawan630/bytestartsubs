@@ -112,7 +112,8 @@ const TABLES = {
             razorpay_plan_id TEXT,
             is_active BOOLEAN DEFAULT TRUE,
             display_order INTEGER,
-            category TEXT DEFAULT 'ecommerce'
+            category TEXT DEFAULT 'ecommerce',
+            price_color TEXT
         )
     `,
 
@@ -251,7 +252,7 @@ const SEEDS = {
 };
 
 // Current schema version
-const CURRENT_VERSION = 5; // Incremented for PostgreSQL migration
+const CURRENT_VERSION = 6; // Incremented for price_color column
 
 module.exports = {
     TABLES,

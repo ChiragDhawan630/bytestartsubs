@@ -157,6 +157,26 @@ async function applyMigration(db, version) {
             console.log('[Migrate] v5 migration: PostgreSQL migration complete.');
             break;
 
+        case 6:
+            // Add price_color column to plans table
+            console.log('[Migrate] Adding price_color column to plans table...');
+            try {
+                const planCols = await db.allAsync(`
+                    SELECT column_name 
+                    FROM information_schema.columns 
+                    WHERE table_name = 'plans'
+                `);
+                if (!planCols.some(c => c.column_name === 'price_color')) {
+                    await db.runAsync('ALTER TABLE plans ADD COLUMN price_color TEXT');
+                    console.log('[Migrate] ✓ Added column "plans.price_color"');
+                }
+            } catch (err) {
+                if (!err.message.includes('already exists')) {
+                    console.warn(`[Migrate] Could not add price_color: ${err.message}`);
+                }
+            }
+            break;
+
         default:
             console.log(`[Migrate] No migration defined for v${version}`);
     }
