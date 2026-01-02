@@ -10,6 +10,8 @@ import { InvoicesModule } from './invoices/invoices.module';
 import { PublicModule } from './public/public.module';
 
 import { ConfigModule } from '@nestjs/config';
+import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
+import { APP_GUARD } from '@nestjs/core';
 
 @Module({
   imports: [
@@ -17,6 +19,11 @@ import { ConfigModule } from '@nestjs/config';
       isGlobal: true,
       envFilePath: '../../.env',
     }),
+    // Rate Limiting: 100 requests per minute per IP
+    ThrottlerModule.forRoot([{
+      ttl: 60000,
+      limit: 100,
+    }]),
     PrismaModule,
     UsersModule,
     AuthModule,
@@ -26,6 +33,13 @@ import { ConfigModule } from '@nestjs/config';
     PublicModule
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    {
+      provide: APP_GUARD,
+      useClass: ThrottlerGuard,
+    },
+  ],
 })
 export class AppModule { }
+
