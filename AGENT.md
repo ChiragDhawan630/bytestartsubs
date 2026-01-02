@@ -1,351 +1,467 @@
 # ByteStart Subscription Platform - Agent Documentation
 
-This document provides all critical information for AI agents working on this project.
+## 🔴 Critical Rules for AI Agents
+
+### 📋 Documentation Consolidation Rule
+
+> **⚠️ CRITICAL: NO ADDITIONAL .MD FILES**
+> 
+> All project documentation MUST be tracked in exactly **3 files only**:
+> 1. **AGENT.md** - Architecture, setup, rules, API reference
+> 2. **TestCases.md** - QA test scenarios and coverage tracking
+> 3. **CATALOG.md** - Version history and changelog
+> 
+> **DO NOT create any additional .md files** such as:
+> - ❌ README.md (use AGENT.md instead)
+> - ❌ CHANGELOG.md (use CATALOG.md instead)
+> - ❌ API.md (use AGENT.md instead)
+> - ❌ NOTES.md, TODO.md, or any other .md files
+> 
+> **Exception:** Documentation that is inherently part of the codebase structure:
+> - ✅ DOCKER.md (deployment guide)
+> - ✅ MIGRATION_SUMMARY.md (one-time migration artifact)
+> - ✅ Walkthrough artifacts in `.gemini/antigravity/brain/` Documentation
+
+> **Architecture:** NestJS Backend (Prisma ORM) + Next.js Frontend (Monorepo)  
+> **Database:** PostgreSQL  
+> **Last Updated:** January 2, 2026 (v4.0.0)
 
 ## 🔗 Quick Links
-- **GitHub**: [ChiragDhawan630/bytestartsubs](https://github.com/ChiragDhawan630/bytestartsubs)
-- **Docker Image**: `ghcr.io/chiragdhawan630/bytestartsubs:latest`
+- **GitHub:** [ChiragDhawan630/bytestartsubs](https://github.com/ChiragDhawan630/bytestartsubs)
+- **Docker Image:** `ghcr.io/chiragdhawan630/bytestartsubs:latest`
 
 ## 📚 Related Documentation
 - **[TestCases.md](./TestCases.md)** - QA test scenarios and coverage status
-- **[CATALOG.md](./CATALOG.md)** - Version history and proposed changes (The "Catalog")
+- **[CATALOG.md](./CATALOG.md)** - Version history and proposed changes
+- **Legacy:** `legacy_src/AGENT_LEGACY.md`, `legacy_src/TestCases_LEGACY.md`
 
 ---
 
 ## 📋 Project Overview
 
-A robust, MVC-structured Node.js application for managing subscriptions, invoices, and plans with Razorpay integration.
+A **monorepo** containing:
+- **`apps/api`** - NestJS REST API backend
+- **`apps/web`** - Next.js frontend application
+- **`legacy_src`** - Deprecated Express.js codebase (reference only)
 
 ### Key Features
-- **User Dashboard**: View & manage subscriptions, profile, and theme.
-- **Admin Panel**: Comprehensive dashboard (`/bytestart`) for managing users, plans, categories, and settings.
-- **Payments**: Seamless integration with Razorpay for subscription payments.
-- **Invoicing**: Automated PDF invoice generation and emailing.
-- **Dev Mode**: Built-in developer support with mock logins.
+- **User Dashboard:** View & manage subscriptions, profile
+- **Admin Panel:** Comprehensive dashboard for users, plans, invoices, settings
+- **Payments:** Razorpay subscription integration
+- **Invoicing:** PDF generation and email delivery
+- **Authentication:** Google OAuth with JWT tokens
 
 ---
 
 ## 🏗️ Architecture
 
-### MVC Structure
+### Monorepo Structure
 ```
-src/
-├── config/         # Database, Environment, Passport configs
-├── controllers/    # Business logic (Admin, User, Invoice, etc.)
-├── middleware/     # Auth, Rate Limiting, Logging
-├── routes/         # API Route definitions
-├── services/       # Razorpay, Email, Invoice services
-├── utils/          # Helpers (Logger, EnvHelper)
-└── app.js          # Express App setup
-
-db/
-├── schema.js       # Centralized table definitions
-└── migrate.js      # Migration runner
-
-public/
-├── js/             # Frontend JavaScript
-└── css/            # Stylesheets
+bytestartsubs/
+├── apps/
+│   ├── api/                    # NestJS Backend
+│   │   ├── prisma/
+│   │   │   └── schema.prisma   # Database schema
+│   │   ├── src/
+│   │   │   ├── admin/          # Admin module
+│   │   │   ├── auth/           # Authentication module
+│   │   │   ├── common/         # Shared utilities
+│   │   │   │   └── filters/    # Exception filters
+│   │   │   ├── invoices/       # Invoice module
+│   │   │   ├── prisma/         # Database service
+│   │   │   ├── public/         # Public endpoints
+│   │   │   ├── subscriptions/  # Subscription module
+│   │   │   ├── users/          # User module
+│   │   │   ├── app.module.ts   # Root module
+│   │   │   └── main.ts         # Application entry
+│   │   └── test/               # E2E tests
+│   │
+│   └── web/                    # Next.js Frontend
+│       ├── src/
+│       │   ├── app/            # App Router pages
+│       │   │   ├── (auth)/     # Auth pages (login, register)
+│       │   │   ├── admin/      # Admin dashboard
+│       │   │   ├── auth/       # OAuth callback
+│       │   │   └── dashboard/  # User dashboard
+│       │   ├── components/     # React components
+│       │   └── lib/            # Utilities (API client)
+│       └── public/             # Static assets
+│
+├── legacy_src/                 # Deprecated Express.js code
+├── .env                        # Environment variables
+├── AGENT.md                    # This file
+├── TestCases.md                # QA documentation
+└── CATALOG.md                  # Version history
 ```
 
-### Database
-- **Engine**: PostgreSQL (via Neon or self-hosted)
-- **Connection**: Via `DATABASE_URL` environment variable
-- **Driver**: `pg` (Node.js PostgreSQL client)
+### Technology Stack
 
-### Technologies
-- **Backend**: Node.js, Express
-- **Database**: PostgreSQL
-- **Payment**: Razorpay
-- **Utilities**: PDFKit, Nodemailer, Passport.js
+| Layer | Technology |
+|-------|------------|
+| **Backend Framework** | NestJS 11.x |
+| **Database** | PostgreSQL |
+| **ORM** | Prisma 6.2.1 |
+| **Authentication** | Passport.js (Google OAuth), JWT |
+| **Frontend** | Next.js 14 (App Router) |
+| **Styling** | Vanilla CSS (custom design system) |
+| **API Client** | Axios |
+| **Payments** | Razorpay |
+| **PDF Generation** | PDFKit |
+| **Email** | Nodemailer |
 
 ---
 
-## 🚀 Setup & Installation
+## 🗄️ Database Schema
 
-1. **Install Dependencies**
-   ```bash
-   npm install
-   ```
+**Database:** PostgreSQL  
+**ORM:** Prisma  
+**Schema Location:** `apps/api/prisma/schema.prisma`
 
-2. **Environment Setup**
-   - Ensure `.env` file is present in the root directory.
-   - Required keys listed below.
+### Core Models
 
-3. **Run the Server**
-   - **Development**: `npm run dev` (Auto-restarts on change)
-   - **Production**: `npm start`
-
-4. **Running Tests**
-   ```bash
-   npm test
-   ```
-
-### 🐳 Docker Deployment
-
-**Build & Run Locally:**
-```bash
-docker compose up -d          # Start app + PostgreSQL
-docker compose logs -f app    # View logs
-docker compose down           # Stop all
-```
-
-**Coolify / aaPanel Setup:**
-1. Push code to Git repo (GitHub, GitLab, etc.)
-2. In Coolify/aaPanel, create new service from Docker Compose
-3. Set environment variables in the panel:
-   - `DB_PASSWORD` - PostgreSQL password
-   - `RAZORPAY_KEY_ID`, `RAZORPAY_KEY_SECRET`
-   - `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `GOOGLE_CALLBACK_URL`
-   - `SESSION_SECRET`
-   - `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS`
-   - `ADMIN_EMAIL`, `ADMIN_PASS`
-4. Deploy - the app will auto-migrate the database on startup
-
-**Key Files:**
-| File | Purpose |
-|------|---------|
-| `Dockerfile` | Multi-stage build, Alpine-based (~180MB) |
-| `compose.yaml` | App + PostgreSQL orchestration |
-| `.dockerignore` | Excludes dev files from build |
-
-**GitHub Actions (CI/CD):**
-
-Images are automatically built and pushed to `ghcr.io` on:
-- Push to `main`/`master` branch
-- Release published
-- Manual trigger via GitHub Actions UI
-
-Image available at: `ghcr.io/<your-username>/bytestart:latest`
+| Model | Purpose | Key Fields |
+|-------|---------|------------|
+| `users` | User accounts | id, email, name, google_id, phone, gstin |
+| `subscriptions` | User subscriptions | id, user_id, plan_id, razorpay_sub_id, status |
+| `plans` | Subscription plans | id, name, price_original, price_discounted, billing_cycle |
+| `invoices` | Invoice records | id, invoice_number, customer_id, total, status |
+| `invoice_items` | Invoice line items | id, invoice_id, description, quantity, rate |
+| `customers` | Manual invoice customers | id, name, email, gstin, address |
+| `settings` | System key-value config | key, value |
+| `email_templates` | Email templates | id, name, subject, body |
+| `activity_logs` | Audit trail | id, user_id, action, details, timestamp |
+| `error_logs` | Error tracking | id, error_type, message, resolved |
+| `categories` | Plan categories | id, name, icon, display_order |
+| `schema_version` | Migration tracking | version, applied_at |
 
 ---
 
-## 🔧 Environment Variables
+## 🔧 Environment Configuration
 
-Required in `.env`:
+Create `.env` in the project root:
+
 ```env
-APP_ENV=dev|prod
-PORT=3000
+# Database (PostgreSQL)
+DATABASE_URL=postgresql://postgres:1234@localhost:5432/bytestart_dev
 
-# Database (PostgreSQL) - Automatic environment selection
-DATABASE_URL_DEV=postgresql://postgres:1234@localhost:5432/bytestart_dev
-DATABASE_URL_PROD=postgresql://user:password@host:5432/database
-DATABASE_SSL=false  # Set to 'true' for Neon/cloud
+# Authentication
+JWT_SECRET=your_jwt_secret_here
+GOOGLE_CLIENT_ID=your_google_client_id
+GOOGLE_CLIENT_SECRET=your_google_client_secret
+GOOGLE_CALLBACK_URL=http://localhost:3000/auth/google/callback
 
-# Coolify/aaPanel: Set DATABASE_URL directly in environment settings
-# The app will use DATABASE_URL if set, otherwise falls back to DEV/PROD above
+# Frontend URL (for OAuth redirects)
+FRONTEND_URL=http://localhost:3001
 
-GOOGLE_CLIENT_ID=...
-GOOGLE_CLIENT_SECRET=...
-RAZORPAY_KEY_ID=...
-RAZORPAY_KEY_SECRET=...
-SMTP_HOST=...
+# Razorpay
+RAZORPAY_KEY_ID=rzp_test_xxxxx
+RAZORPAY_KEY_SECRET=your_razorpay_secret
+
+# SMTP (Email)
+SMTP_HOST=smtp.gmail.com
 SMTP_PORT=587
-SMTP_USER=...
-SMTP_PASS=...
+SMTP_USER=your_email@gmail.com
+SMTP_PASS=your_app_password
 ```
+
+---
+
+## 🚀 Setup & Development
+
+### Prerequisites
+- Node.js 18+
+- PostgreSQL 14+
+- npm or pnpm
+
+### Installation
+
+```bash
+# Clone repository
+git clone https://github.com/ChiragDhawan630/bytestartsubs.git
+cd bytestartsubs
+
+# Install backend dependencies
+cd apps/api
+npm install
+
+# Generate Prisma client
+npx prisma generate
+
+# Run database migrations (if using Prisma migrations)
+npx prisma db push
+
+# Start backend (development)
+npm run start:dev
+# Backend runs on http://localhost:3000
+
+# In another terminal, install frontend
+cd apps/web
+npm install
+
+# Start frontend (development)
+npm run dev
+# Frontend runs on http://localhost:3001
+```
+
+### Running Tests
+
+```bash
+# Backend E2E tests
+cd apps/api
+npm run test:e2e
+
+# Backend unit tests
+npm test
+
+# Build production
+npm run build
+```
+
+---
+
+## 📡 API Endpoints
+
+### Public (No Auth Required)
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/public/plans` | List active subscription plans |
+| GET | `/public/settings` | Get public site settings |
+
+### Authentication
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/auth/google` | Initiate Google OAuth |
+| GET | `/auth/google/callback` | OAuth callback |
+
+### User (JWT Required)
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/users/profile` | Get current user profile |
+| PATCH | `/users/profile` | Update user profile |
+| GET | `/subscriptions/my-subscriptions` | User's subscriptions |
+| POST | `/subscriptions` | Create subscription |
+| POST | `/subscriptions/verify` | Verify payment |
+
+### Admin (Admin JWT Required)
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/admin/stats` | Dashboard statistics |
+| GET | `/admin/users` | List users (paginated) |
+| POST | `/admin/users` | Create user |
+| PATCH | `/admin/users/:id` | Update user |
+| DELETE | `/admin/users/:id` | Delete user |
+| GET | `/admin/plans` | List all plans |
+| POST | `/admin/plans` | Create plan |
+| PATCH | `/admin/plans/:id` | Update plan |
+| DELETE | `/admin/plans/:id` | Delete plan |
+| GET | `/admin/settings` | Get all settings |
+| PATCH | `/admin/settings` | Update settings |
+| GET | `/admin/email-templates` | List email templates |
+| GET | `/admin/email-templates/:id` | Get single template |
+| PATCH | `/admin/email-templates/:id` | Update template |
+
+### Invoices (Admin)
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/invoices` | List all invoices |
+| GET | `/invoices/:id` | Get invoice details |
+| GET | `/invoices/:id/download` | Download PDF |
+| POST | `/invoices/:id/send` | Email invoice |
 
 ---
 
 ## ⚠️ CRITICAL RULES FOR AI AGENTS
 
-### 1. Database Migrations
+### 1. Database Migrations (Prisma)
 
-**NEVER modify the database schema directly with one-off scripts.**
+**ALWAYS modify database through Prisma schema:**
 
-Always use the migration system:
+1. Update `apps/api/prisma/schema.prisma`
+2. Run `npx prisma generate` to update client
+3. Run `npx prisma db push` for development
+4. Use `npx prisma migrate` for production
 
-1. **Update `db/schema.js`** - Add/modify table definitions
-2. **Increment `CURRENT_VERSION`** in schema.js
-3. **Add migration case** in `db/migrate.js`
-4. **Test** with `npm run dev`
+**NEVER:**
+- Write raw SQL to modify schema
+- Bypass Prisma for schema changes
+- Modify generated client files
 
-#### Migration Process - Step by Step
+### 2. Module Architecture (NestJS)
 
-**Step 1: Update the Schema Definition**
-```javascript
-// In db/schema.js - TABLES object
-users: `
-    CREATE TABLE IF NOT EXISTS users (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        // existing columns...
-        new_column TEXT,  // <-- Add new column here
-        created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-    )
-`,
+When adding new functionality:
+
+1. **Create Module:** `nest g module <name>`
+2. **Create Service:** `nest g service <name>`
+3. **Create Controller:** `nest g controller <name>`
+4. **Create DTOs:** Define validation classes
+5. **Wire Dependencies:** Import PrismaModule if needed
+
+### 3. Global Pipes & Filters
+
+The following are configured globally in `main.ts`:
+
+```typescript
+// Validation (auto-validates DTOs)
+app.useGlobalPipes(new ValidationPipe({
+  whitelist: true,      // Strip unknown properties
+  transform: true,      // Auto-transform types
+  forbidNonWhitelisted: true,  // Reject unknown fields
+}));
+
+// Exception handling (consistent error format)
+app.useGlobalFilters(new HttpExceptionFilter());
 ```
 
-**Step 2: Increment the Version Number**
-```javascript
-// At bottom of db/schema.js
-const CURRENT_VERSION = 3;  // Was 2, now 3
+### 4. DTO Validation
+
+All DTOs should use `class-validator` decorators:
+
+```typescript
+import { IsString, IsEmail, IsOptional } from 'class-validator';
+
+export class UpdateUserDto {
+  @IsString()
+  @IsOptional()
+  name?: string;
+
+  @IsEmail()
+  @IsOptional()
+  email?: string;
+}
 ```
 
-**Step 3: Add Migration Logic**
-```javascript
-// In db/migrate.js - applyMigration function
-case 3:
-    console.log('[Migrate] Adding new_column to users...');
-    await new Promise((resolve, reject) => {
-        db.run('ALTER TABLE users ADD COLUMN new_column TEXT', (err) => {
-            if (err) reject(err);
-            else resolve();
-        });
-    });
-    break;
+### 5. Authentication
+
+- **NEVER trust user-provided IDs in request body**
+- **ALWAYS extract user ID from JWT payload:**
+
+```typescript
+@Get('profile')
+@UseGuards(AuthGuard('jwt'))
+getProfile(@Req() req: Request) {
+  const userId = req.user.userId; // From JWT, NOT body
+}
 ```
 
-**Step 4: Test**
-```bash
-npm run dev
-# Check logs for: [Migrate] ✓ Applied migration v3
-```
+### 6. Testing Requirements
 
-#### Migration Best Practices
+- **CRITICAL:** Update `TestCases.md` when adding features
+- **E2E Tests:** Add to `apps/api/test/`
+- **Run tests before committing:** `npm run test:e2e`
 
-✅ **DO:**
-- Always modify both `schema.js` AND `migrate.js`
-- Make migrations idempotent (safe to run multiple times)
-- Check if columns exist before adding them
-- Test migrations on a dev database first
+### 7. Documentation
 
-❌ **DON'T:**
-- Create one-off scripts that directly ALTER tables
-- Modify the database schema outside of the migration system
-- Skip version numbers
-- Delete or modify existing migrations
-
-### 2. Code Style
-- Use `const` and arrow functions
-- Follow existing patterns in each file
-- Add JSDoc comments for public functions
-
-### 3. Testing
-- Test files are in `src/tests/`
-- Run with `npm test`
-- **CRITICAL:** When making changes, you MUST add or update corresponding test cases in `[TestCases.md](./TestCases.md)`. This includes adding new scenarios for any new functionality implemented. Documentation and testing coverage must stay in sync with development.
-
-### 4. Documentation & Cataloging
-- **CATALOG UPDATE:** You MUST update `[CATALOG.md](./CATALOG.md)` after completing any changes to the codebase. Log what was added, changed, fixed, or removed.
-- **NO NEW `.md` FILES:** Do not create any additional Markdown files. All documentation must exist within `AGENT.md`, `TestCases.md`, or `CATALOG.md`.
-- **The Catalog (CATALOG.md):** All proposed changes and ongoing work must be logged in `[CATALOG.md](./CATALOG.md)`.
-- **"Live" Status:** Entries in the Catalog are considered "Work in Progress" and NOT live while they are being developed.
-- **Going Live:** Changes recorded in the Catalog only go "Live" (are finalized and officially part of the platform) once the corresponding Test Cases in `TestCases.md` have been executed and passed.
+- **CATALOG.md:** Log all changes after implementation
+- **AGENT.md:** Update if architecture changes
+- **NO NEW `.md` FILES:** Use existing documentation files
 
 ---
 
 ## 📂 Key Files Reference
 
+### Backend (apps/api)
+
 | File | Purpose |
 |------|---------|
-| `src/app.js` | Express application setup |
-| `server.js` | Entry point, starts server |
-| `db/schema.js` | All table definitions |
-| `db/migrate.js` | Migration runner |
-| `src/controllers/adminController.js` | Admin API logic |
-| `src/controllers/userController.js` | User API logic |
-| `src/controllers/invoiceController.js` | Invoice/PDF logic |
-| `src/services/invoiceService.js` | PDF generation |
-| `src/services/emailService.js` | Email sending |
-| `admin.html` | Admin panel SPA |
-| `public/js/admin.js` | Admin panel core JS |
-| `public/js/admin-modals.js` | Admin modal functions |
-| `public/js/admin-render.js` | Admin rendering functions |
+| `src/main.ts` | Application entry, global pipes/filters |
+| `src/app.module.ts` | Root module, imports all modules |
+| `prisma/schema.prisma` | Database schema |
+| `src/common/filters/http-exception.filter.ts` | Global error handler |
+| `src/auth/jwt.strategy.ts` | JWT authentication |
+| `src/auth/google.strategy.ts` | Google OAuth |
+| `src/prisma/prisma.service.ts` | Database service |
+
+### Frontend (apps/web)
+
+| File | Purpose |
+|------|---------|
+| `src/app/layout.tsx` | Root layout |
+| `src/app/page.tsx` | Landing page |
+| `src/app/globals.css` | Design system |
+| `src/lib/api.ts` | Axios API client |
+| `src/app/auth/callback/page.tsx` | OAuth callback |
+| `src/app/dashboard/page.tsx` | User dashboard |
+| `src/app/admin/page.tsx` | Admin dashboard |
 
 ---
 
-## 🤖 Common Tasks
+## 🔐 Security Considerations
 
-### Adding a New API Endpoint
-1. Add route in `src/routes/` (adminRoutes.js, userRoutes.js, etc.)
-2. Add controller function in `src/controllers/`
-3. Export function from controller
-4. Wire up route to controller function
-
-### Adding a Database Column
-1. Update `db/schema.js` TABLES object
-2. Increment CURRENT_VERSION in schema.js
-3. Add migration case in `db/migrate.js`
-4. Update any controllers that use the table
-
-### Creating a Test
-1. Add test file in `src/tests/`
-2. Follow Jest patterns
-3. Update TestCases.md with scenario
+1. **JWT Storage:** Frontend stores in `localStorage`
+2. **401 Handling:** Axios interceptor clears token on 401
+3. **CORS:** Enabled in `main.ts` with `app.enableCors()`
+4. **Validation:** All inputs validated via DTOs
+5. **SQL Injection:** Prevented by Prisma parameterization
+6. **XSS:** React auto-escapes, avoid `dangerouslySetInnerHTML`
 
 ---
 
-## 📊 API Endpoints
+## 🐳 Docker Deployment
 
-### Public
-- `GET /api/plans` - List all plans
-- `GET /api/categories` - List categories
-- `GET /api/policy/:type` - Get policy content
+```bash
+# Build and run
+docker compose up -d
 
-### User (Authenticated)
-- `GET /api/user` - Get current user
-- `GET /api/my-subscriptions` - User's subscriptions
-- `POST /api/subscription/create` - Create subscription
+# View logs
+docker compose logs -f api
 
-### Admin (Admin Auth Required)
-- `GET /api/admin/stats` - Dashboard stats
-- `GET /api/admin/users` - List users
-- `POST /api/admin/users` - Create user
-- `POST /api/admin/users/:id` - Update user
-- `GET /api/admin/plans` - List plans
-- `POST /api/admin/plans` - Create plan
-- `PUT /api/admin/plans/:id` - Update plan
-- `GET /api/admin/invoices` - List invoices
-- `POST /api/admin/invoices/:id/pdf` - Generate PDF
-- `GET /api/admin/settings` - Get settings
-- `POST /api/admin/settings` - Update settings
+# Stop
+docker compose down
+```
+
+The `compose.yaml` includes:
+- NestJS API service
+- PostgreSQL database
+- Volume persistence for data
 
 ---
 
-## 📋 Current Database Schema
+## 📝 Common Tasks
 
-**Version: 5** (as of 2026-01-02 - PostgreSQL Migration)
+### Adding a New Admin Endpoint
 
-| Table | Key Columns |
-|-------|-------------|
-| users | id, email, name, phone, gstin, address, city, state, pincode, theme |
-| subscriptions | id, user_id, razorpay_sub_id, plan_id, status, renewal_date |
-| plans | id, name, price_discounted, razorpay_plan_id, category, is_active |
-| categories | id, name, icon, tagline, display_order |
-| customers | id, name, email, gstin, address, city, state, pincode |
-| invoices | id, invoice_number, customer_id, total, status |
-| invoice_items | id, invoice_id, description, quantity, rate, amount |
-| settings | key, value |
-| email_templates | id, name, subject, body, created_at |
-| activity_logs | id, user_id, action, details, timestamp |
-| error_logs | id, error_type, message, resolved, created_at |
-| schema_version | version, applied_at, description |
+1. Add method to `admin.service.ts`
+2. Add endpoint to `admin.controller.ts`
+3. Create DTO if needed in `admin/dto/`
+4. Add test case to `TestCases.md`
+5. Log change in `CATALOG.md`
 
-### Migration History
+### Adding a New Database Table
 
-| Version | Description | Date |
-|---------|-------------|------|
-| 1 | Initial schema - all base tables | 2025-12-24 |
-| 2 | Added address fields to users table (address, city, state, pincode, gstin, theme) | 2026-01-01 |
-| 3 | Added email_templates table and seed data | 2026-01-01 |
-| 4 | Added renewal_date to subscriptions table | 2026-01-01 |
-| 5 | **PostgreSQL Migration** - Migrated from SQLite to PostgreSQL | 2026-01-02 |
+1. Add model to `prisma/schema.prisma`
+2. Run `npx prisma generate`
+3. Run `npx prisma db push`
+4. Create NestJS module for the table
+5. Update documentation
+
+### Frontend API Integration
+
+1. Add TypeScript interface for response
+2. Create API call in component or lib
+3. Handle loading and error states
+4. Use Axios client from `src/lib/api.ts`
 
 ---
 
-## ⚠️ Legacy Files (DO NOT USE)
+## 🔄 Migration from Legacy
 
-These files are deprecated and remain only for reference:
-- `dist/database.js` - Old database init
-- `qa/fix_data.js` - Old migration script
+The legacy Express.js codebase is preserved in `legacy_src/` for reference. Key differences:
+
+| Aspect | Legacy (Express) | Current (NestJS) |
+|--------|-----------------|------------------|
+| Database | SQLite → PostgreSQL | PostgreSQL |
+| ORM | Raw SQL | Prisma |
+| Auth | Session-based | JWT |
+| Validation | Manual | class-validator |
+| Structure | MVC | Modular (NestJS) |
+| Frontend | EJS/HTML | Next.js |
 
 ---
 
-## 📝 Documentation Files
-
-- **`AGENT.md`** - This file (AI agent reference)
-- **`TestCases.md`** - QA test scenarios and coverage
-- **`CATALOG.md`** - Proposed changes and version history (The "Catalog")
-
----
-
-*Last updated: 2026-01-02*
+*Document maintained by ByteStart Engineering Team*  
+*Last Updated: January 2, 2026*

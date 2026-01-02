@@ -1,0 +1,110 @@
+# =============================================================================
+# ByteStart Subscription Platform - Docker Compose (Monorepo)
+# =============================================================================
+# Deploy with: docker compose up -d
+# Compatible with: Coolify, aaPanel, Docker standalone
+#
+# Architecture: NestJS API + Next.js Frontend + PostgreSQL
+# =============================================================================
+
+services:
+  # ---------------------------------------------------------------------------
+  # NestJS Backend API
+  # ---------------------------------------------------------------------------
+  api:
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile
+    container_name: bytestart-api
+    ports:
+      - "${API_PORT:-3000}:3000"
+    environment:
+      # Database
+      - DATABASE_URL=postgresql://postgres:${DB_PASSWORD:-bytestart123}@db:5432/bytestart
+
+      # JWT
+      - JWT_SECRET=${JWT_SECRET:-change_this_secret_in_production}
+
+      # Google OAuth
+      - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
+      - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET}
+      - GOOGLE_CALLBACK_URL=${GOOGLE_CALLBACK_URL:-http://localhost:3000/auth/google/callback}
+
+      # Frontend URL (for OAuth redirects)
+      - FRONTEND_URL=${FRONTEND_URL:-http://localhost:3001}
+
+      # Razorpay
+      - RAZORPAY_KEY_ID=${RAZORPAY_KEY_ID}
+      - RAZORPAY_KEY_SECRET=${RAZORPAY_KEY_SECRET}
+
+      # SMTP
+      - SMTP_HOST=${SMTP_HOST}
+      - SMTP_PORT=${SMTP_PORT:-587}
+      - SMTP_USER=${SMTP_USER}
+      - SMTP_PASS=${SMTP_PASS}
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+    networks:
+      - bytestart-network
+
+  # ---------------------------------------------------------------------------
+  # Next.js Frontend (Optional - for full-stack deployment)
+  # ---------------------------------------------------------------------------
+  web:
+    build:
+      context: .
+      dockerfile: apps/web/Dockerfile
+    container_name: bytestart-web
+    ports:
+      - "${WEB_PORT:-3001}:3000"
+    environment:
+      - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL:-http://localhost:3000}
+    depends_on:
+      - api
+    restart: unless-stopped
+    networks:
+      - bytestart-network
+    # Comment out if deploying frontend separately
+    profiles:
+      - full-stack
+
+  # ---------------------------------------------------------------------------
+  # PostgreSQL Database
+  # ---------------------------------------------------------------------------
+  db:
+    image: postgres:16-alpine
+    container_name: bytestart-db
+    environment:
+      - POSTGRES_DB=bytestart
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=${DB_PASSWORD:-bytestart123}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres -d bytestart" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    restart: unless-stopped
+    networks:
+      - bytestart-network
+    # Uncomment to expose PostgreSQL (debugging only)
+    # ports:
+    #   - "5432:5432"
+
+    # -----------------------------------------------------------------------------
+    # Volumes
+    # -----------------------------------------------------------------------------
+volumes:
+  postgres_data:
+    driver: local
+
+# -----------------------------------------------------------------------------
+# Networks
+# -----------------------------------------------------------------------------
+networks:
+  bytestart-network:
+    driver: bridge

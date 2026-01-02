@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ByteStart Technologies - Plans</title>
+    <link rel="manifest" href="/manifest.json">
+    <link rel="icon" type="image/png"
+        href="https://bytestarttechnologies.com/wp-content/uploads/2024/10/cropped-Circle-512x512-Logo-modified.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        html {
+            scroll-padding-top: 100px;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .gradient-text {
+            background: linear-gradient(to right, #2563eb, #9333ea);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .check-list li {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 0.75rem;
+        }
+
+        .emoji-bullet {
+            margin-right: 0.75rem;
+            margin-top: 0.15rem;
+            flex-shrink: 0;
+            font-size: 1.25rem;
+            line-height: 1.5rem;
+        }
+
+        .plan-card {
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s ease;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .plan-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+
+        .btn-hover {
+            transition: all 0.2s ease;
+        }
+
+        .btn-hover:hover {
+            transform: scale(1.02);
+        }
+
+        .btn-hover:active {
+            transform: scale(0.98);
+        }
+
+        .term-text {
+            font-size: 0.7rem;
+            line-height: 1rem;
+            opacity: 0.8;
+        }
+
+        @keyframes shimmer {
+            0% {
+                background-position: 100% 0;
+            }
+
+            100% {
+                background-position: -100% 0;
+            }
+        }
+
+        .animate-shimmer {
+            animation: shimmer 3s infinite linear;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-50 text-gray-800 antialiased overflow-x-hidden">
+
+    <!-- Header -->
+    <header class="bg-white/95 backdrop-blur-sm border-b border-gray-200 sticky top-0 z-50 transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
+            <div class="flex items-center gap-2 sm:gap-3">
+                <img id="navbar-logo"
+                    src="https://bytestarttechnologies.com/wp-content/uploads/2024/10/cropped-Circle-512x512-Logo-modified.png"
+                    alt="Logo" class="h-8 w-8 sm:h-10 sm:w-10 object-contain">
+                <h1 id="navbar-brand" class="text-lg sm:text-xl font-bold tracking-tight text-gray-900 leading-tight">
+                    ByteStart <span class="text-blue-600 block sm:inline">Services</span>
+                </h1>
+            </div>
+            <div class="flex items-center gap-3">
+                <div id="auth-btn-container">
+                    <a href="/auth/google"
+                        class="btn-hover bg-white border border-gray-300 text-gray-700 px-4 py-2 sm:px-5 sm:py-2.5 rounded-full text-sm font-medium shadow-sm hover:bg-gray-50 flex items-center gap-2">
+                        <img src="https://lh3.googleusercontent.com/COxitqgJr1sJnIDe8-jiKhxDx1FrYbtRHKJ9z_hELisAlapwE9LUPh6fcXIfb5vwpbMl4xl9H9TRFPc5NOO8Sb3VSgIBrfRYvW6cUA"
+                            alt="G" class="w-4 h-4">
+                        Continue with Google
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-20">
+
+        <!-- Intro -->
+        <div class="text-center max-w-3xl mx-auto px-2">
+            <!-- Sale Banner -->
+            <div id="sale-banner"
+                class="inline-block bg-gradient-to-r from-red-100 via-red-50 to-red-100 border border-red-200 text-red-700 px-6 py-2 rounded-full text-sm font-bold mb-6 animate-shimmer bg-[length:200%_100%] shadow-lg shadow-red-100">
+                🔥 ByteStart Services Sale - Limited Time Offer!
+            </div>
+
+            <h2 id="homepage-title" class="text-3xl sm:text-4xl font-bold tracking-tight text-gray-900 mb-4">Plans for
+                <span class="gradient-text">Growth & Scale</span> 📈
+            </h2>
+            <p id="homepage-subtitle" class="text-lg text-gray-600">Choose the perfect package to elevate your digital
+                presence.</p>
+        </div>
+
+        <!-- Dynamic Plans Container -->
+        <div id="plans-container" class="space-y-20">
+            <div class="text-center py-12">
+                <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+                <p class="text-gray-500 mt-4">Loading plans...</p>
+            </div>
+        </div>
+
+        <!-- Templating Script -->
+        <script>
+            // Robust Retry Logic
+            async function fetchWithRetry(url, retries = 3) {
+                for (let i = 0; i < retries; i++) {
+                    try {
+                        const res = await fetch(url + '?_t=' + Date.now()); // Cache Busting
+                        if (res.ok) return res;
+                    } catch (e) {
+                        console.warn(`Attempt ${i + 1} failed for ${url}`);
+                    }
+                    await new Promise(r => setTimeout(r, 1000)); // Wait 1s
+                }
+                throw new Error("Failed to connect after retries");
+            }
+
+            async function loadPlans() {
+                const container = document.getElementById('plans-container');
+                try {
+                    // Fetch Data with Retries
+                    const [resPlans, resCats] = await Promise.all([
+                        fetchWithRetry('/api/plans'),
+                        fetchWithRetry('/api/categories')
+                    ]);
+
+                    let plansData = [];
+                    try {
+                        plansData = await resPlans.json();
+                    } catch (e) { console.error("Invalid JSON from Plans"); }
+
+                    // Robust handling: Data might be array (old) or {plans:[]} (new) or {useStatic:true}
+                    let plans = [];
+                    if (Array.isArray(plansData)) {
+                        plans = plansData;
+                    } else if (plansData.plans && Array.isArray(plansData.plans)) {
+                        plans = plansData.plans;
+                    }
+
+                    const categories = await resCats.json();
+
+                    // Sort categories
+                    categories.sort((a, b) => a.display_order - b.display_order);
+
+                    container.innerHTML = ''; // Clear loading
+
+                    // Check if there are no plans at all
+                    if (plans.length === 0) {
+                        container.innerHTML = `<div class="text-center py-16">
+                            <div class="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                                <span class="text-4xl">📋</span>
+                            </div>
+                            <h3 class="text-xl font-bold text-gray-900 mb-2">No Plans Available Yet</h3>
+                            <p class="text-gray-500 mb-6 max-w-md mx-auto">We're working on bringing you amazing subscription plans. Check back soon!</p>
+                            <a href="#contact" class="inline-flex items-center gap-2 bg-blue-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-blue-700 transition">
+                                Contact Us 💬
+                            </a>
+                        </div>`;
+                        return;
+                    }
+
+                    // Dynamic Rendering
+                    let hasVisiblePlans = false;
+                    categories.forEach(cat => {
+                        const catPlans = plans.filter(p => p.category === cat.id && p.is_active);
+                        if (catPlans.length === 0) return; // Hide empty categories
+
+                        hasVisiblePlans = true;
+
+                        // Define colors based on category ID for variety
+                        let themeColor = 'blue';
+                        if (cat.id === 'website') themeColor = 'green';
+                        if (cat.id === 'marketing') themeColor = 'purple';
+
+                        // Section
+                        const section = document.createElement('section');
+                        section.className = 'animate-fade-in mb-16';
+                        section.innerHTML = `
+                            <div class="flex flex-col sm:flex-row items-center gap-4 mb-8 justify-center sm:justify-start text-center sm:text-left">
+                                <div class="w-14 h-14 bg-${themeColor}-100 rounded-xl flex items-center justify-center text-3xl shadow-sm border border-${themeColor}-200">
+                                    ${cat.icon || '📦'}
+                                </div>
+                                <div>
+                                    <h3 class="text-2xl font-bold text-gray-900 tracking-tight">${cat.name}</h3>
+                                    ${cat.tagline ? `<p class="text-${themeColor}-600 font-medium text-sm mt-1">${cat.tagline}</p>` : ''}
+                                </div>
+                            </div>
+                            
+                            <!-- Static Warning for E-Commerce -->
+                            ${cat.id === 'ecommerce' ? `
+                            <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 mb-8 rounded-r-lg max-w-4xl mx-auto sm:mx-0 shadow-sm">
+                                <div class="flex gap-3">
+                                    <span class="text-xl">⚠️</span>
+                                    <p class="text-sm text-yellow-800 font-bold self-center">IMPORTANT: Plans work only on Razorpay Autopayment</p>
+                                </div>
+                            </div>` : ''}
+
+                            <div class="grid md:grid-cols-${catPlans.length > 2 ? '3' : '2'} gap-6 items-stretch max-w-${catPlans.length > 2 ? '7xl' : '5xl'} mx-auto sm:mx-0">
+                                ${catPlans.map(p => createPlanCard(p, themeColor)).join('')}
+                            </div>
+                        `;
+                        container.appendChild(section);
+                    });
+
+                    // Check if no plans are visible (all inactive)
+                    if (!hasVisiblePlans) {
+                        container.innerHTML = `<div class="text-center py-16">
+                            <div class="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                                <span class="text-4xl">📋</span>
+                            </div>
+                            <h3 class="text-xl font-bold text-gray-900 mb-2">No Plans Available Yet</h3>
+                            <p class="text-gray-500 mb-6 max-w-md mx-auto">We're working on bringing you amazing subscription plans. Check back soon!</p>
+                            <a href="#contact" class="inline-flex items-center gap-2 bg-blue-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-blue-700 transition">
+                                Contact Us 💬
+                            </a>
+                        </div>`;
+                    }
+
+                } catch (e) {
+                    console.error("Failed to load plans", e);
+                    document.getElementById('plans-container').innerHTML = `<div class="text-center py-12">
+                        <i class="fa-solid fa-cloud-bolt text-4xl text-gray-300 mb-4"></i>
+                        <p class="text-gray-500 mb-4">Could not connect to server.</p>
+                        <p class="text-xs text-red-300 font-mono bg-red-50 p-2 rounded mb-4 max-w-sm mx-auto overflow-auto text-left">${e.message || e}</p>
+                        <button onclick="loadPlans()" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">Try Again</button>
+                    </div>`;
+                }
+            }
+
+            // Helper to render individual cards
+            function createPlanCard(plan, theme) {
+                const features = JSON.parse(plan.features || '[]');
+
+                // Heuristic for 'highlight' (Annual or expensive plans)
+                const isHighlight = plan.billing_cycle === '1 year' || plan.name.toLowerCase().includes('annual');
+
+                // Dynamic Styling
+                let cardClass = "bg-white rounded-2xl shadow-sm border border-gray-200 p-6 plan-card relative flex flex-col transition-all hover:shadow-lg";
+                // Uniform Button Style (Black)
+                let btnClass = `btn-hover mt-auto w-full block text-center py-2.5 bg-black text-white rounded-lg font-medium hover:bg-gray-800 shadow-xl shadow-black/10`;
+
+                if (isHighlight && theme === 'blue') {
+                    cardClass = "bg-white rounded-2xl shadow-xl border-2 border-blue-600 p-6 plan-card relative overflow-hidden flex flex-col transform md:scale-105 z-10";
+                    // Keep button black even on highlight
+                }
+
+                const displayPrice = plan.price_discounted || 0;
+                const displayOrig = plan.price_original || 0;
+                const priceColorStyle = plan.price_color ? `style="color: ${plan.price_color}"` : '';
+
+                let suffix = '';
+                const cycle = (plan.billing_cycle || '').toLowerCase();
+
+                if (cycle === 'monthly' || cycle === '1 month') suffix = '/ Month';
+                else if (cycle === 'yearly' || cycle === 'annual' || cycle === '1 year') suffix = '/ Month';
+                else if (cycle === 'quarterly' || cycle === '3 months') suffix = '/ Month';
+                else suffix = ''; // Don't show confusing suffix for custom periods, rely on top tag
+
+                // Safety fix for features
+                let planFeatures = [];
+                try {
+                    if (typeof plan.features === 'string') planFeatures = JSON.parse(plan.features);
+                    else if (Array.isArray(plan.features)) planFeatures = plan.features;
+                } catch (e) { planFeatures = []; }
+                if (!Array.isArray(planFeatures)) planFeatures = [];
+
+                return `
+                    <div class="${cardClass}">
+                        ${isHighlight && theme === 'blue' ? `<div class="absolute top-0 right-0 bg-blue-600 text-white text-[10px] font-bold px-3 py-1 rounded-bl-lg">🌟 BEST VALUE</div>` : ''}
+                        
+                        <div class="flex justify-between items-start mb-4">
+                            <h4 class="text-lg font-bold text-gray-900">${plan.name}</h4>
+                            <span class="text-xs bg-gray-100 dark:!bg-blue-500/10 text-gray-800 dark:!text-blue-400 px-2 py-1 rounded font-bold capitalize border border-gray-200 dark:!border-blue-500/20">Renewed ${plan.billing_cycle}</span>
+                        </div>
+
+                        <div class="mb-6">
+                            <div class="text-gray-400 line-through text-sm font-medium mb-1">₹${displayOrig}</div>
+                            <div class="flex items-baseline">
+                                <span class="text-3xl font-bold text-gray-900" ${priceColorStyle}>₹${displayPrice}</span>
+                                <span class="text-gray-500 ml-1 text-sm font-medium">+ GST <span class="text-gray-400 font-normal">${suffix}</span></span>
+                            </div>
+                        </div>
+
+                        <div class="border-t border-gray-100 pt-4 mb-6 flex-grow">
+                            <ul class="check-list space-y-3 text-sm text-gray-600">
+                                ${planFeatures.map(f => {
+                    // Extract emoji if present
+                    const match = f.match(/^([\u{1F600}-\u{1F64F}\u{1F300}-\u{1F5FF}\u{1F680}-\u{1F6FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{1F900}-\u{1F9FF}\u{1F1E0}-\u{1F1FF}])/u);
+                    let emoji = '';
+                    let text = f;
+
+                    if (match) {
+                        emoji = match[1];
+                        text = f.substring(match[0].length).trim();
+                        // Fixed width span for alignment
+                        return `<li class="flex items-baseline gap-3"><span class="shrink-0 w-6 text-center text-xl self-start mt-[-2px]">${emoji}</span> <span class="leading-relaxed text-gray-700 font-medium">${text}</span></li>`;
+                    } else {
+                        // Default bullet
+                        return `<li class="flex items-baseline gap-3"><span class="shrink-0 w-6 text-center text-xl text-gray-300 self-start mt-[-2px]">&bull;</span> <span class="leading-relaxed text-gray-700">${text}</span></li>`;
+                    }
+                }).join('')}
+                            </ul>
+                        </div>
+
+                        <button onclick="startSubscription('${plan.id}')" class="${btnClass}">
+                            Subscribe 🚀
+                        </button>
+                    </div>
+                `;
+            }
+
+            // Load Settings & Plans
+            async function loadEverything() {
+                // Fetch Settings First
+                try {
+                    const settingsRes = await fetch('/api/settings');
+                    if (settingsRes.ok) {
+                        const settings = await settingsRes.json();
+
+                        // Apply Settings
+                        if (settings.company_name) {
+                            document.title = settings.company_name;
+                            const brand = document.getElementById('navbar-brand');
+                            if (brand) brand.innerHTML = settings.company_name;
+                        }
+
+                        if (settings.navbar_icon || settings.logo_url) {
+                            const logo = document.getElementById('navbar-logo');
+                            if (logo) logo.src = settings.navbar_icon || settings.logo_url;
+                        }
+
+                        if (settings.favicon_url) {
+                            let link = document.querySelector("link[rel~='icon']");
+                            if (!link) {
+                                link = document.createElement('link');
+                                link.rel = 'icon';
+                                document.getElementsByTagName('head')[0].appendChild(link);
+                            }
+                            link.href = settings.favicon_url;
+                        }
+
+                        if (settings.footer_text) {
+                            const footer = document.querySelector('footer p');
+                            if (footer) footer.innerHTML = `&copy; ${new Date().getFullYear()} ${settings.footer_text}`;
+                        }
+
+                        if (settings.support_phone) {
+                            const waBtn = document.getElementById('whatsapp-btn');
+                            if (waBtn) waBtn.href = `https://wa.me/${settings.support_phone}?text=Hi%20there,%20I%20have%20a%20question.`;
+
+                            const callBtn = document.getElementById('support-btn');
+                            if (callBtn) callBtn.href = `tel:+${settings.support_phone}`;
+                        }
+
+                        if (settings.support_email) {
+                            const emailBtn = document.getElementById('email-btn');
+                            if (emailBtn) emailBtn.href = `mailto:${settings.support_email}`;
+                        }
+
+                        // Homepage Content
+                        if (settings.sale_banner_text) {
+                            const banner = document.getElementById('sale-banner');
+                            if (banner) banner.innerHTML = settings.sale_banner_text;
+                        }
+
+                        if (settings.homepage_title) {
+                            const title = document.getElementById('homepage-title');
+                            if (title) {
+                                // Parse **text** for gradient highlighting
+                                const parsed = settings.homepage_title.replace(/\*\*(.+?)\*\*/g, '<span class="gradient-text">$1</span>');
+                                title.innerHTML = parsed;
+                            }
+                        }
+
+                        if (settings.homepage_subtitle) {
+                            const subtitle = document.getElementById('homepage-subtitle');
+                            if (subtitle) subtitle.innerHTML = settings.homepage_subtitle;
+                        }
+
+                        if (settings.disclaimer_text) {
+                            const disclaimer = document.getElementById('disclaimer-text');
+                            if (disclaimer) disclaimer.innerHTML = settings.disclaimer_text;
+                        }
+
+
+                    }
+                } catch (e) { console.warn("Failed to load settings", e); }
+
+                // Add Year Update Logic if settings failed
+                const footer = document.querySelector('footer p');
+                if (footer && footer.innerText.includes('2024')) footer.innerHTML = footer.innerText.replace('2024', new Date().getFullYear());
+
+                loadPlans();
+            }
+
+            // Call loading
+            window.addEventListener('load', loadEverything);
+        </script>
+
+        <!-- CTA Footer -->
+        <section class="bg-gray-100 rounded-3xl p-8 sm:p-12 text-center mt-12 scroll-mt-24" id="contact">
+            <h3 class="text-2xl font-bold text-gray-900 mb-4">Ready to scale your business?</h3>
+            <p class="text-gray-600 mb-8 max-w-2xl mx-auto">Select a plan above or contact us directly to discuss a
+                custom solution tailored to your specific needs.</p>
+            <div class="flex flex-col sm:flex-row gap-6 justify-center items-center">
+                <a id="whatsapp-btn" href="#" target="_blank" rel="noopener noreferrer"
+                    class="group relative inline-flex items-center justify-center gap-3 px-8 py-4 bg-emerald-600 text-white rounded-2xl font-bold overflow-hidden transition-all duration-300 hover:bg-emerald-700 hover:scale-105 hover:shadow-[0_0_30px_rgba(16,185,129,0.4)] active:scale-95">
+                    <div
+                        class="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:animate-[shimmer_1.5s_infinite]">
+                    </div>
+                    <i class="fa-brands fa-whatsapp text-2xl"></i>
+                    <span class="relative">💬 Chat on WhatsApp</span>
+                </a>
+
+                <a id="support-btn" href="#"
+                    class="group relative inline-flex items-center justify-center gap-3 px-8 py-4 bg-white border-2 border-slate-200 text-slate-700 rounded-2xl font-bold transition-all duration-300 hover:border-blue-500 hover:text-blue-600 hover:scale-105 hover:shadow-xl active:scale-95 dark:bg-slate-900 dark:border-slate-800 dark:text-slate-300 dark:hover:border-blue-500 dark:hover:text-blue-400">
+                    <i class="fa-solid fa-phone-volume text-xl animate-pulse"></i>
+                    <span>📞 Call Support</span>
+                </a>
+
+                <a id="email-btn" href="#"
+                    class="group relative inline-flex items-center justify-center gap-3 px-8 py-4 bg-indigo-600 text-white rounded-2xl font-bold overflow-hidden transition-all duration-300 hover:bg-indigo-700 hover:scale-105 hover:shadow-[0_0_30px_rgba(79,70,229,0.4)] active:scale-95">
+                    <div
+                        class="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:animate-[shimmer_1.5s_infinite]">
+                    </div>
+                    <i class="fa-solid fa-envelope-open-text text-xl"></i>
+                    <span class="relative">📧 Email Today</span>
+                </a>
+            </div>
+
+            <!-- Disclaimer -->
+            <p id="disclaimer-text" class="text-center text-xs text-gray-400 mt-8 border-t border-gray-200 pt-4">
+                Disclaimer: All websites are subscription based only. Prices and plans are subject to change.
+            </p>
+        </section>
+
+    </main>
+
+    <footer class="bg-white border-t border-gray-200 mt-20 py-12">
+        <div
+            class="max-w-7xl mx-auto px-4 text-center text-gray-500 text-sm flex flex-col sm:flex-row justify-between items-center gap-4">
+            <p id="footer-copyright">&copy; 2025 ByteStart Technologies. All rights reserved.</p>
+            <div id="footer-links" class="space-x-4">
+                <a href="/policy/privacy" class="hover:text-gray-900">Privacy Policy</a>
+                <a href="/policy/terms" class="hover:text-gray-900">Terms & Conditions</a>
+                <a href="/policy/refund" class="hover:text-gray-900">Refund Policy</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- T&C Modal -->
+    <div id="tc-modal"
+        class="fixed inset-0 z-[100] hidden items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+        <div class="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl transform transition-all scale-100">
+            <h3 class="text-xl font-bold text-gray-900 mb-4">Welcome to ByteStart! 👋</h3>
+            <p class="text-gray-600 mb-6 text-sm">
+                By continuing, you agree to our <a href="/privacy-policy/" class="text-blue-600 underline">Terms &
+                    Conditions</a> and <a href="/refund_returns/" class="text-blue-600 underline">Refund Policy</a>.
+            </p>
+            <button onclick="acceptTC()"
+                class="w-full bg-blue-600 text-white rounded-lg py-3 font-semibold hover:bg-blue-700">
+                I Accept & Continue
+            </button>
+        </div>
+    </div>
+
+    <!-- Success Modal -->
+    <div id="success-modal"
+        class="fixed inset-0 z-[200] hidden items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+        <div class="bg-white rounded-2xl max-w-sm w-full p-8 shadow-2xl text-center transform scale-100">
+            <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <span class="text-3xl">✅</span>
+            </div>
+            <h3 class="text-2xl font-bold text-gray-900 mb-2">Subscription Active!</h3>
+            <p class="text-gray-600 mb-6">
+                Thank you for subscribing. We will contact you shortly for project details.
+            </p>
+            <button onclick="window.location.href='/profile'"
+                class="w-full bg-green-600 text-white rounded-lg py-3 font-semibold hover:bg-green-700">
+                Go to Dashboard
+            </button>
+        </div>
+    </div>
+
+    <!-- Login Prompt Modal -->
+    <div id="login-modal"
+        class="fixed inset-0 z-[150] hidden items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+        <div class="bg-white rounded-2xl max-w-sm w-full p-6 shadow-2xl text-center">
+            <img src="https://bytestarttechnologies.com/wp-content/uploads/2024/10/cropped-Circle-512x512-Logo-modified.png"
+                class="w-12 h-12 mx-auto mb-4">
+            <h3 class="text-xl font-bold text-gray-900 mb-2">Login Required</h3>
+            <p class="text-gray-600 mb-6 text-sm">
+                Please simple login with Google to view plans and subscribe.
+            </p>
+            <a href="/auth/google"
+                class="btn-hover w-full flex items-center justify-center gap-2 bg-white border border-gray-300 text-gray-700 px-4 py-3 rounded-lg text-sm font-bold shadow-sm hover:bg-gray-50">
+                <img src="https://lh3.googleusercontent.com/COxitqgJr1sJnIDe8-jiKhxDx1FrYbtRHKJ9z_hELisAlapwE9LUPh6fcXIfb5vwpbMl4xl9H9TRFPc5NOO8Sb3VSgIBrfRYvW6cUA"
+                    alt="G" class="w-5 h-5">
+                Continue with Google
+            </a>
+        </div>
+    </div>
+
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <script>
+        // PWA Registration
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js');
+            });
+        }
+
+        // T&C Modal Logic & Auth Check combined
+        async function initPage() {
+            // Check T&C
+            if (!localStorage.getItem('tc_accepted')) {
+                document.getElementById('tc-modal').classList.replace('hidden', 'flex');
+            }
+
+            // Check Auth
+            try {
+                const res = await fetch('/api/user');
+                const data = await res.json();
+
+                // Dev Mode Enhancements
+                if (data.isDev) {
+                    // Add link to Footer
+                    const footerDiv = document.querySelector('footer div');
+                    if (footerDiv) {
+                        const devLink = document.createElement('a');
+                        devLink.href = '/dev-login-popup';
+                        devLink.innerText = '🚧 Dev Login';
+                        devLink.className = 'text-red-500 font-bold hover:underline';
+                        footerDiv.appendChild(devLink);
+                    }
+
+                    // Add link to Login Modal
+                    const loginModalMain = document.querySelector('#login-modal > div');
+                    if (loginModalMain) {
+                        const devBypass = document.createElement('a');
+                        devBypass.href = '/dev-login-popup';
+                        devBypass.className = 'block mt-4 text-xs text-red-500 font-bold hover:underline';
+                        devBypass.innerText = 'DEVELOPER MODE: Bypass Auth';
+                        loginModalMain.appendChild(devBypass);
+                    }
+                }
+
+                const btnContainer = document.getElementById('auth-btn-container');
+                if (data.loggedIn) {
+                    btnContainer.innerHTML = `
+                        <a href="/profile" class="flex items-center gap-2 bg-gray-100 hover:bg-gray-200 text-gray-800 px-4 py-2 rounded-full font-medium transition-colors">
+                            <img src="${data.user.avatar_url || 'https://ui-avatars.com/api/?name=' + data.user.name}" class="w-6 h-6 rounded-full">
+                            Profile
+                        </a>
+                    `;
+                } else {
+                    // Show Login Modal passively if not logged in (wait 1 minute)
+                    if (localStorage.getItem('tc_accepted')) {
+                        setTimeout(() => {
+                            document.getElementById('login-modal').classList.replace('hidden', 'flex');
+                        }, 60000); // 60 seconds = 1 minute
+                    }
+                }
+
+                // Apply theme from user profile or localStorage
+                if (data.loggedIn && data.user && data.user.theme) {
+                    applyTheme(data.user.theme);
+                } else {
+                    const savedTheme = localStorage.getItem('theme') || 'light';
+                    applyTheme(savedTheme);
+                }
+            } catch (e) { console.error(e); }
+        }
+
+        function acceptTC() {
+            localStorage.setItem('tc_accepted', 'true');
+            document.getElementById('tc-modal').classList.replace('flex', 'hidden');
+            initPage();
+        }
+
+        window.addEventListener('load', initPage);
+
+        async function startSubscription(planType) {
+            try {
+                // 1. Create Subscription on Backend
+                const response = await fetch('/api/subscription/create', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ plan_type: planType })
+                });
+
+                if (response.status === 401) {
+                    window.location.href = '/auth/google';
+                    return;
+                }
+
+                const data = await response.json();
+
+                if (!data.subscription_id) {
+                    showErrorModal('Subscription Error', data.error || 'Unable to create subscription. Please try again later or contact support.');
+                    console.error(data);
+                    return;
+                }
+
+                // 2. Open Razorpay Checkout
+                var options = {
+                    "key": data.key_id,
+                    "subscription_id": data.subscription_id,
+                    "name": "ByteStart Technologies",
+                    "description": "Subscription Plan",
+                    "image": "https://bytestarttechnologies.com/wp-content/uploads/2024/10/cropped-Circle-512x512-Logo-modified.png",
+                    "prefill": {
+                        "email": data.user_email,
+                        "contact": data.user_phone
+                    },
+                    "handler": async function (response) {
+                        try {
+                            // Verify on backend to trigger email + db update
+                            await fetch('/api/subscription/verify', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({
+                                    razorpay_payment_id: response.razorpay_payment_id,
+                                    razorpay_subscription_id: response.razorpay_subscription_id,
+                                    razorpay_signature: response.razorpay_signature,
+                                    plan_type: planType
+                                })
+                            });
+
+                            // Show Success Modal
+                            document.getElementById('success-modal').classList.replace('hidden', 'flex');
+                        } catch (err) {
+                            alert("Payment verified but error updating UI. Check email.");
+                            window.location.href = '/profile';
+                        }
+                    },
+                    "theme": {
+                        "color": "#2563eb"
+                    }
+                };
+
+                var rzp1 = new Razorpay(options);
+                rzp1.open();
+
+            } catch (error) {
+                console.error('Error:', error);
+                showErrorModal('Something Went Wrong', 'We encountered an issue processing your request. Please try again or contact our support team for assistance.');
+            }
+        }
+    </script>
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/service-worker.js');
+        }
+    </script>
+
+    <!-- Error Modal -->
+    <div id="error-modal"
+        class="fixed inset-0 z-[200] hidden items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+        <div class="bg-white rounded-2xl max-w-sm w-full p-8 shadow-2xl text-center transform scale-100">
+            <div class="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <span class="text-3xl">❌</span>
+            </div>
+            <h3 id="error-modal-title" class="text-2xl font-bold text-gray-900 mb-2">Error</h3>
+            <p id="error-modal-message" class="text-gray-600 mb-6">
+                Something went wrong. Please try again.
+            </p>
+            <div class="space-y-3">
+                <button onclick="closeErrorModal()"
+                    class="w-full bg-gray-900 text-white rounded-lg py-3 font-semibold hover:bg-gray-800">
+                    Try Again
+                </button>
+                <a href="#contact"
+                    class="block w-full bg-green-600 text-white rounded-lg py-3 font-semibold hover:bg-green-700"
+                    onclick="closeErrorModal()">
+                    💬 Contact Support
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Error Modal Functions
+        function showErrorModal(title, message) {
+            document.getElementById('error-modal-title').textContent = title;
+            document.getElementById('error-modal-message').textContent = message;
+            document.getElementById('error-modal').classList.replace('hidden', 'flex');
+        }
+
+        function closeErrorModal() {
+            document.getElementById('error-modal').classList.replace('flex', 'hidden');
+        }
+
+        // Force light mode on index page 
+        document.documentElement.classList.remove('dark');
+    </script>
+</body>
+
+</html>

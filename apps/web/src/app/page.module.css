@@ -1,0 +1,33 @@
+/* Page specific styles */
+.hero {
+  min-height: 80vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  background: radial-gradient(circle at center, hsla(var(--primary)/0.1) 0%, transparent 70%);
+}
+
+.title {
+  font-size: 4rem;
+  margin-bottom: 1.5rem;
+  letter-spacing: -0.04em;
+  background: linear-gradient(135deg, hsl(var(--text-main)), hsl(var(--text-muted)));
+  -webkit-background-clip: text;
+  background-clip: text;
+  /* color: transparent; Only if background clip works reliably across browsers, fallback provided */
+}
+
+.subtitle {
+  font-size: 1.25rem;
+  color: hsl(var(--text-muted));
+  max-width: 600px;
+  margin: 0 auto 2rem;
+}
+
+.plansGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  padding: 4rem 0;
+}

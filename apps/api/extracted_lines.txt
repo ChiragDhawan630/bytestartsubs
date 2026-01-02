@@ -1,0 +1,3 @@
+
+# SSL: Set to 'false' for local dev, 'true' for Neon/cloud
+DATABASE_SSL=false

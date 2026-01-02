@@ -1,46 +1,52 @@
-# Dependencies
-node_modules/
+# =============================================================================
+# ByteStart Platform - .dockerignore
+# =============================================================================
+# Prevents unnecessary files from being copied to Docker images
+# =============================================================================
 
-# Database files (SQLite legacy)
-*.sqlite
-*.sqlite-shm
-*.sqlite-wal
-database*.sqlite*
+# Node modules (will be installed in container)
+node_modules
+**/node_modules
+npm-debug.log*
 
-# Environment (secrets injected at runtime)
-.env
-.env.*
-
-# Git
-.git/
+# Development files
+.git
 .gitignore
+.env.local
+.env.*.local
 
 # IDE
-.vscode/
-.idea/
+.vscode
+.idea
+*.swp
+*.swo
+*~
 
-# Tests
-src/tests/
-tests/
-qa/
-*.test.js
-jest.config.js
-
-# Build/dist artifacts
-dist/
-
-# Logs and temporary files
+# Testing
+coverage
 *.log
-*.txt
-debug_log.txt
-*_fail*.txt
-*_run*.txt
-test_output.txt
+test-results
 
-# OS files
+# Build artifacts (legacy)
+legacy_src/dist
+legacy_src/database*.sqlite*
+
+# Next.js
+apps/web/.next
+apps/web/out
+
+# NestJS
+apps/api/dist
+
+# OS
 .DS_Store
 Thumbs.db
 
-# Documentation (not needed in image)
+# Documentation
+README.md
 *.md
-!README.md
+!apps/*/README.md
+
+# Misc
+*.tsbuildinfo
+.eslintcache

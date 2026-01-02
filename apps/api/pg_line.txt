@@ -1,0 +1,1 @@
+DATABASE_URL_DEV=postgresql://postgres:1234@localhost:5432/bytestart_dev

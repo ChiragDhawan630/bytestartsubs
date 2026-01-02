@@ -1,0 +1,46 @@
+# Dependencies
+node_modules/
+
+# Database files (SQLite legacy)
+*.sqlite
+*.sqlite-shm
+*.sqlite-wal
+database*.sqlite*
+
+# Environment (secrets injected at runtime)
+.env
+.env.*
+
+# Git
+.git/
+.gitignore
+
+# IDE
+.vscode/
+.idea/
+
+# Tests
+src/tests/
+tests/
+qa/
+*.test.js
+jest.config.js
+
+# Build/dist artifacts
+dist/
+
+# Logs and temporary files
+*.log
+*.txt
+debug_log.txt
+*_fail*.txt
+*_run*.txt
+test_output.txt
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Documentation (not needed in image)
+*.md
+!README.md
