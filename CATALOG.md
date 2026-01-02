@@ -13,6 +13,13 @@ This document tracks all proposed and applied changes to the ByteStart Subscript
 
 ---
 
+## [3.1.2] - 2026-01-02
+
+### Fixed
+- **API**: Fixed `500 Internal Server Error` on `/api/plans` due to incorrect SQLite syntax (`is_active = 1`) in PostgreSQL environment. Updated query to use `is_active = TRUE`.
+
+---
+
 ## [3.1.1] - 2026-01-02
 
 ### Fixed

@@ -11,15 +11,18 @@ router.get('/categories', (req, res) => {
 });
 
 // Public Plans
-router.get('/plans', (req, res) => {
-  db.all(
-    'SELECT * FROM plans WHERE is_active = 1 ORDER BY display_order ASC',
-    (err, rows) => {
-      if (err) return res.status(500).send(err);
-      if (rows.length === 0) return res.json({ useStatic: true });
-      res.json({ useStatic: false, plans: rows });
-    }
-  );
+router.get('/plans', async (req, res) => {
+  try {
+    const result = await db.query(
+      'SELECT * FROM plans WHERE is_active = TRUE ORDER BY display_order ASC'
+    );
+    const rows = result.rows;
+    if (rows.length === 0) return res.json({ useStatic: true, plans: [] });
+    res.json({ useStatic: false, plans: rows });
+  } catch (err) {
+    console.error('Error fetching plans:', err);
+    res.status(500).send(err.message);
+  }
 });
 
 // Policies
