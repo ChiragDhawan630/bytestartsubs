@@ -2,6 +2,10 @@
 
 This document provides all critical information for AI agents working on this project.
 
+## 🔗 Quick Links
+- **GitHub**: [ChiragDhawan630/bytestartsubs](https://github.com/ChiragDhawan630/bytestartsubs)
+- **Docker Image**: `ghcr.io/chiragdhawan630/bytestartsubs:latest`
+
 ## 📚 Related Documentation
 - **[TestCases.md](./TestCases.md)** - QA test scenarios and coverage status
 - **[CATALOG.md](./CATALOG.md)** - Version history and proposed changes (The "Catalog")

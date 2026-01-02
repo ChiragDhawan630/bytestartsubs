@@ -9,6 +9,7 @@ This document tracks all proposed and applied changes to the ByteStart Subscript
 ## 📚 Related Documentation
 - **[AGENT.md](./AGENT.md)** - Architecture, rules, and AI agent guide
 - **[TestCases.md](./TestCases.md)** - QA test scenarios and coverage
+- **GitHub**: [ChiragDhawan630/bytestartsubs](https://github.com/ChiragDhawan630/bytestartsubs)
 
 ---
 
