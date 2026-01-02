@@ -1,0 +1,1423 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ByteStart Admin</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="manifest" href="/manifest.json">
+    <script type="module" src="https://cdn.jsdelivr.net/npm/emoji-picker-element@^1/index.js"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#eef2ff',
+                            100: '#e0e7ff',
+                            200: '#c7d2fe',
+                            300: '#a5b4fc',
+                            400: '#818cf8',
+                            500: '#6366f1',
+                            600: '#4f46e5',
+                            700: '#4338ca',
+                            800: '#3730a3',
+                            900: '#312e81',
+                        },
+                        accent: {
+                            cyan: '#06b6d4',
+                            purple: '#8b5cf6',
+                            pink: '#ec4899',
+                            orange: '#f97316',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        * {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        body {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Premium Background - Clean B&W */
+        .admin-bg {
+            background: #fdfdfd;
+        }
+
+        html.dark .admin-bg {
+            background: #000000;
+        }
+
+        /* Glassmorphism */
+        .glass {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        html.dark .glass {
+            background: rgba(30, 41, 59, 0.7);
+            border: 1px solid rgba(148, 163, 184, 0.1);
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            box-shadow:
+                0 4px 6px -1px rgba(0, 0, 0, 0.05),
+                0 10px 20px -5px rgba(0, 0, 0, 0.05),
+                inset 0 1px 0 0 rgba(255, 255, 255, 0.5);
+        }
+
+        html.dark .glass-card {
+            background: rgba(30, 41, 59, 0.85);
+            box-shadow:
+                0 4px 6px -1px rgba(0, 0, 0, 0.3),
+                0 10px 20px -5px rgba(0, 0, 0, 0.2),
+                inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
+        }
+
+        /* Premium Sidebar - Minimalist */
+        .sidebar {
+            background: #ffffff;
+            border-right: 1px solid #e5e7eb;
+        }
+
+        html.dark .sidebar {
+            background: #0a0a0a;
+            border-right: 1px solid #262626;
+        }
+
+        .sidebar-link {
+            position: relative;
+            transition: all 0.2s ease;
+            color: #6b7280;
+        }
+
+        .sidebar-link:hover {
+            color: #111827;
+            background: #f3f4f6;
+        }
+
+        html.dark .sidebar-link {
+            color: #9ca3af;
+        }
+
+        html.dark .sidebar-link:hover {
+            color: #ffffff;
+            background: #1f2937;
+        }
+
+        .sidebar-link.active {
+            color: #000000;
+            font-weight: 700;
+            background: #f3f4f6;
+            border-left: 3px solid #000000;
+        }
+
+        html.dark .sidebar-link.active {
+            color: #ffffff;
+            background: #171717;
+            border-left: 3px solid #ffffff;
+        }
+
+        .sidebar-link.active i {
+            color: #000000;
+        }
+
+        html.dark .sidebar-link.active i {
+            color: #ffffff;
+        }
+
+        /* Premium Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(180deg, #cbd5e1 0%, #94a3b8 100%);
+            border-radius: 10px;
+            border: 2px solid transparent;
+            background-clip: content-box;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(180deg, #94a3b8 0%, #64748b 100%);
+            background-clip: content-box;
+        }
+
+        html.dark ::-webkit-scrollbar-thumb {
+            background: linear-gradient(180deg, #475569 0%, #334155 100%);
+            background-clip: content-box;
+        }
+
+        /* Premium Buttons - Monochrome */
+        .btn-primary {
+            background: #000000;
+            color: #ffffff;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            transition: all 0.2s ease;
+            border: 1px solid #000000;
+        }
+
+        .btn-primary:hover {
+            background: #333333;
+            transform: translateY(-1px);
+        }
+
+        html.dark .btn-primary {
+            background: #ffffff;
+            color: #000000;
+            border: 1px solid #ffffff;
+        }
+
+        html.dark .btn-primary:hover {
+            background: #e5e5e5;
+        }
+
+        .btn-secondary {
+            background: #ffffff;
+            border: 1px solid #e5e7eb;
+            color: #374151;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+        }
+
+        .btn-secondary:hover {
+            background: #f9fafb;
+            border-color: #d1d5db;
+        }
+
+        html.dark .btn-secondary {
+            background: #171717;
+            border: 1px solid #404040;
+            color: #d4d4d4;
+        }
+
+        html.dark .btn-secondary:hover {
+            background: #262626;
+        }
+
+        .btn-danger {
+            background: #000000;
+            color: #ffffff;
+            border: 1px solid #dc2626;
+            /* Keep red border for danger hint */
+        }
+
+        .btn-danger:hover {
+            background: #dc2626;
+            color: white;
+            border: 1px solid #dc2626;
+        }
+
+        /* Premium Inputs */
+        .input-premium {
+            transition: all 0.2s ease;
+            border: 1px solid #e5e7eb;
+            background: #ffffff;
+            color: #000000;
+        }
+
+        .input-premium:focus {
+            border-color: #000000;
+            box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.1);
+            outline: none;
+        }
+
+        html.dark .input-premium {
+            background: #171717;
+            border-color: #404040;
+            color: #ffffff;
+        }
+
+        html.dark .input-premium:focus {
+            border-color: #ffffff;
+            box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.2);
+        }
+
+        /* Premium Cards - B&W */
+        .card-premium {
+            background: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+            border: 1px solid #f3f4f6;
+        }
+
+        .card-premium:hover {
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            transform: translateY(-2px);
+            border-color: #e5e7eb;
+        }
+
+        html.dark .card-premium {
+            background: #171717;
+            border-color: #262626;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Stat Cards - Clean */
+        .stat-card {
+            border-radius: 12px;
+            padding: 1.5rem;
+            position: relative;
+            background: #ffffff;
+            border: 1px solid #e5e7eb;
+            color: #000000;
+        }
+
+        .stat-card i {
+            color: #000000;
+        }
+
+        html.dark .stat-card {
+            background: #171717;
+            border-color: #404040;
+            color: #ffffff;
+        }
+
+        html.dark .stat-card i {
+            color: #ffffff;
+        }
+
+        /* Helper classes for stats - override previous colors with grayscale/bold logic if needed, or keep simple borders */
+        .stat-card-purple,
+        .stat-card-cyan,
+        .stat-card-pink,
+        .stat-card-orange {
+            border-left: 4px solid #000000;
+        }
+
+        html.dark .stat-card-purple,
+        html.dark .stat-card-cyan,
+        html.dark .stat-card-pink,
+        html.dark .stat-card-orange {
+            border-left: 4px solid #ffffff;
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes pulse-glow {
+
+            0%,
+            100% {
+                box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.4);
+            }
+
+            50% {
+                box-shadow: 0 0 0 8px rgba(99, 102, 241, 0);
+            }
+        }
+
+        @keyframes shimmer {
+            0% {
+                background-position: -200% 0;
+            }
+
+            100% {
+                background-position: 200% 0;
+            }
+        }
+
+        .animate-fade-in-up {
+            animation: fadeInUp 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .animate-slide-in {
+            animation: slideIn 0.3s ease-out;
+        }
+
+        .animate-pulse-glow {
+            animation: pulse-glow 2s infinite;
+        }
+
+        .loading-shimmer {
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+        }
+
+        html.dark .loading-shimmer {
+            background: linear-gradient(90deg, #334155 25%, #475569 50%, #334155 75%);
+            background-size: 200% 100%;
+        }
+
+        /* Premium Tables */
+        .table-premium {
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+
+        .table-premium thead {
+            background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
+        }
+
+        html.dark .table-premium thead {
+            background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
+        }
+
+        .table-premium tbody tr {
+            transition: all 0.2s ease;
+        }
+
+        .table-premium tbody tr:hover {
+            background-color: rgba(99, 102, 241, 0.05);
+            transform: scale(1.002);
+        }
+
+        html.dark .table-premium tbody tr {
+            background-color: transparent !important;
+        }
+
+        html.dark .table-premium tbody tr:hover {
+            background-color: rgba(99, 102, 241, 0.15) !important;
+        }
+
+        /* Additional premium table row styling */
+        .table-premium tbody tr {
+            border-bottom: 1px solid rgba(229, 231, 235, 0.5);
+        }
+
+        html.dark .table-premium tbody tr {
+            border-bottom: 1px solid rgba(55, 65, 81, 0.5);
+        }
+
+        /* Premium hover for buttons - Light mode */
+        .hover-premium {
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .hover-premium:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px -2px rgba(0, 0, 0, 0.15);
+        }
+
+        html.dark .hover-premium:hover {
+            box-shadow: 0 4px 12px -2px rgba(255, 255, 255, 0.1);
+        }
+
+        /* Toast */
+        .toast {
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.4);
+        }
+
+        /* Modal Overlay */
+        .modal-overlay {
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(8px);
+        }
+
+        /* Status Badges */
+        .badge-success {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            box-shadow: 0 2px 8px -2px rgba(16, 185, 129, 0.4);
+        }
+
+        .badge-warning {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            box-shadow: 0 2px 8px -2px rgba(245, 158, 11, 0.4);
+        }
+
+        .badge-error {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            box-shadow: 0 2px 8px -2px rgba(239, 68, 68, 0.4);
+        }
+
+        /* Dark Mode Specific */
+        html.dark .text-gray-900 {
+            color: #f1f5f9;
+        }
+
+        html.dark .text-gray-800 {
+            color: #e2e8f0;
+        }
+
+        html.dark .text-gray-700 {
+            color: #cbd5e1;
+        }
+
+        html.dark .text-gray-600 {
+            color: #94a3b8;
+        }
+
+        html.dark .text-gray-500 {
+            color: #64748b;
+        }
+
+        html.dark .bg-white {
+            background-color: #1e293b;
+        }
+
+        html.dark .bg-gray-50 {
+            background-color: #0f172a;
+        }
+
+        html.dark .bg-gray-100 {
+            background-color: #1e293b;
+        }
+
+        html.dark .border-gray-200,
+        html.dark .border-gray-100 {
+            border-color: #334155;
+        }
+
+        /* Site Settings Dark Mode - Form Elements */
+        html.dark input:not([type="checkbox"]):not([type="radio"]),
+        html.dark textarea,
+        html.dark select {
+            background-color: #0f172a;
+            border-color: #334155;
+            color: #e2e8f0;
+        }
+
+        html.dark input:not([type="checkbox"]):not([type="radio"]):focus,
+        html.dark textarea:focus,
+        html.dark select:focus {
+            border-color: #6366f1;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+        }
+
+        html.dark input::placeholder,
+        html.dark textarea::placeholder {
+            color: #64748b;
+        }
+
+        /* Site Settings Dark Mode - Section Headers */
+        html.dark .border-b {
+            border-color: #334155;
+        }
+
+        html.dark .border-purple-200 {
+            border-color: #4338ca;
+        }
+
+        html.dark .border-gray-100 {
+            border-color: #334155;
+        }
+
+        /* Site Settings Dark Mode - Containers */
+        html.dark .rounded-xl.shadow-sm.border.border-gray-200,
+        html.dark .max-w-4xl.mx-auto.bg-white {
+            background-color: #1e293b;
+            border-color: #334155;
+        }
+
+        /* Site Settings Dark Mode - Image Previews */
+        html.dark img.border.border-gray-200 {
+            border-color: #334155;
+            background-color: #0f172a;
+        }
+
+        /* Policy Textareas */
+        html.dark textarea.font-mono {
+            background-color: #0f172a;
+            color: #94a3b8;
+        }
+
+        /* Gradient Headers in Settings */
+        html.dark .from-purple-50 {
+            --tw-gradient-from: #1e1b4b;
+        }
+
+        html.dark .to-indigo-50 {
+            --tw-gradient-to: #312e81;
+        }
+
+        html.dark .from-amber-50 {
+            --tw-gradient-from: #292524;
+        }
+
+        html.dark .to-orange-50 {
+            --tw-gradient-to: #431407;
+        }
+
+        /* Readonly inputs */
+        html.dark input[readonly] {
+            background-color: #1e293b;
+            color: #94a3b8;
+        }
+
+        /* Login page special bg */
+        .login-bg {
+            background:
+                radial-gradient(ellipse at top left, rgba(99, 102, 241, 0.15) 0%, transparent 50%),
+                radial-gradient(ellipse at bottom right, rgba(236, 72, 153, 0.1) 0%, transparent 50%),
+                linear-gradient(180deg, #f8fafc 0%, #e2e8f0 100%);
+        }
+
+        html.dark .login-bg {
+            background:
+                radial-gradient(ellipse at top left, rgba(99, 102, 241, 0.2) 0%, transparent 50%),
+                radial-gradient(ellipse at bottom right, rgba(139, 92, 246, 0.15) 0%, transparent 50%),
+                linear-gradient(180deg, #0f172a 0%, #1e1b4b 100%);
+        }
+
+        /* Floating shapes for login */
+        .floating-shape {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(60px);
+            opacity: 0.5;
+            animation: float 20s infinite ease-in-out;
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translate(0, 0) rotate(0deg);
+            }
+
+            25% {
+                transform: translate(20px, -30px) rotate(5deg);
+            }
+
+            50% {
+                transform: translate(-10px, 20px) rotate(-5deg);
+            }
+
+            75% {
+                transform: translate(30px, 10px) rotate(3deg);
+            }
+        }
+    </style>
+</head>
+
+<body class="admin-bg text-gray-800 h-screen overflow-hidden flex">
+
+    <!-- Login Screen -->
+    <div id="login-section" class="fixed inset-0 z-50 flex items-center justify-center login-bg p-4">
+        <!-- Floating shapes removed for clean B&W look -->
+
+        <div
+            class="glass-card p-10 rounded-3xl w-full max-w-md text-center border border-white/20 animate-fade-in-up relative z-10">
+            <!-- Logo with glow effect -->
+            <!-- Logo -->
+            <div class="mb-8 flex justify-center">
+                <div class="relative">
+                    <img src="https://bytestarttechnologies.com/wp-content/uploads/2024/10/cropped-Circle-512x512-Logo-modified.png"
+                        class="h-16 w-16 relative z-10 drop-shadow-sm grayscale">
+                </div>
+            </div>
+
+            <h1 class="text-2xl font-bold mb-2 text-gray-900 tracking-tight">Admin Portal</h1>
+            <p class="text-sm text-gray-500 mb-8">Welcome back to ByteStart Technologies</p>
+
+            <form id="admin-login-form" onsubmit="handleLogin(event)" class="space-y-5 text-left">
+                <div>
+                    <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">Email
+                        Address</label>
+                    <input type="email" id="email"
+                        class="input-premium w-full rounded-xl p-3.5 focus:ring-2 focus:ring-primary-500 outline-none text-gray-900"
+                        placeholder="admin@example.com" required>
+                </div>
+                <div>
+                    <label
+                        class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">Password</label>
+                    <input type="password" id="password"
+                        class="input-premium w-full rounded-xl p-3.5 focus:ring-2 focus:ring-primary-500 outline-none text-gray-900"
+                        placeholder="••••••••" required>
+                </div>
+                <button type="submit"
+                    class="btn-primary w-full text-white py-4 rounded-xl font-semibold text-base tracking-wide">
+                    <i class="fa-solid fa-lock mr-2"></i>Secure Login
+                </button>
+            </form>
+
+            <div class="mt-8 pt-8 border-t border-gray-200/50">
+                <a href="/auth/google"
+                    class="inline-flex items-center justify-center gap-3 w-full py-3.5 px-4 rounded-xl bg-white border border-gray-200 text-gray-700 font-medium hover:bg-gray-50 hover:shadow-md transition-all duration-300">
+                    <img src="https://lh3.googleusercontent.com/COxitqgJr1sJnIDe8-jiKhxDx1FrYbtRHKJ9z_hELisAlapwE9LUPh6fcXIfb5vwpbMl4xl9H9TRFPc5NOO8Sb3VSgIBrfRYvW6cUA"
+                        class="w-5 h-5">
+                    Continue with Google
+                </a>
+            </div>
+
+            <p class="mt-6 text-xs text-gray-400">Protected by enterprise-grade security</p>
+        </div>
+    </div>
+
+    <!-- Dashboard Layout -->
+    <div id="dashboard-section" class="hidden flex w-full h-full">
+
+        <!-- Premium Sidebar -->
+        <aside class="sidebar w-72 flex flex-col h-full z-20 border-r border-gray-200/50">
+            <!-- Logo Header -->
+            <div class="p-6 flex items-center gap-4 border-b border-gray-100">
+                <div class="relative">
+                    <div class="absolute inset-0 bg-primary-500/20 rounded-xl blur-md"></div>
+                    <img src="https://bytestarttechnologies.com/wp-content/uploads/2024/10/cropped-Circle-512x512-Logo-modified.png"
+                        class="h-10 w-10 relative z-10">
+                </div>
+                <div>
+                    <div class="flex items-center gap-2">
+                        <span class="font-bold text-xl tracking-tight text-gray-900">Admin<span
+                                class="text-primary-600">Portal</span></span>
+                        <span id="env-badge"
+                            class="hidden text-[10px] bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-400 px-1.5 py-0.5 rounded font-bold uppercase tracking-wider border border-amber-200 dark:border-amber-800">Dev</span>
+                    </div>
+                    <p class="text-xs text-gray-500">Management Dashboard</p>
+                </div>
+            </div>
+
+            <!-- Navigation -->
+            <nav class="flex-grow p-4 space-y-1 overflow-y-auto">
+                <!-- Overview Section -->
+                <div class="px-3 py-2">
+                    <p class="text-[10px] font-bold uppercase tracking-widest text-gray-400">Overview</p>
+                </div>
+                <button onclick="switchTab('users')"
+                    class="sidebar-link w-full text-left px-4 py-3 rounded-xl text-gray-600 flex items-center gap-3 font-medium">
+                    <span class="text-xl">👥</span>
+                    <span>Users</span>
+                </button>
+                <button onclick="switchTab('subscriptions')"
+                    class="sidebar-link w-full text-left px-4 py-3 rounded-xl text-gray-600 flex items-center gap-3 font-medium">
+                    <span class="text-xl">💳</span>
+                    <span>Subscriptions</span>
+                </button>
+                <button onclick="switchTab('razorpay-plans')"
+                    class="sidebar-link w-full text-left px-4 py-3 rounded-xl text-gray-600 flex items-center gap-3 font-medium">
+                    <span class="text-xl">🏦</span>
+                    <span>Razorpay Plans</span>
+                </button>
+
+                <!-- Management Section -->
+                <div class="px-3 py-2 mt-4">
+                    <p class="text-[10px] font-bold uppercase tracking-widest text-gray-400">Management</p>
+                </div>
+                <button onclick="switchTab('plans')"
+                    class="sidebar-link w-full text-left px-4 py-3 rounded-xl text-gray-600 flex items-center gap-3 font-medium">
+                    <span class="text-xl">📦</span>
+                    <span>Manage Plans</span>
+                </button>
+                <button onclick="switchTab('categories')"
+                    class="sidebar-link w-full text-left px-4 py-3 rounded-xl text-gray-600 flex items-center gap-3 font-medium">
+                    <span class="text-xl">🏷️</span>
+                    <span>Categories</span>
+                </button>
+                <button onclick="switchTab('customers')"
+                    class="sidebar-link w-full text-left px-4 py-3 rounded-xl text-gray-600 flex items-center gap-3 font-medium">
+                    <span class="text-xl">🧑‍💼</span>
+                    <span>Customers</span>
+                </button>
+                <button onclick="switchTab('invoices')"
+                    class="sidebar-link w-full text-left px-4 py-3 rounded-xl text-gray-600 flex items-center gap-3 font-medium">
+                    <span class="text-xl">🧾</span>
+                    <span>Invoices</span>
+                </button>
+                <button onclick="switchTab('settings')"
+                    class="sidebar-link w-full text-left px-4 py-3 rounded-xl text-gray-600 flex items-center gap-3 font-medium">
+                    <span class="text-xl">⚙️</span>
+                    <span>Site Settings</span>
+                </button>
+                <button onclick="switchTab('email-templates')"
+                    class="sidebar-link w-full text-left px-4 py-3 rounded-xl text-gray-600 flex items-center gap-3 font-medium">
+                    <span class="text-xl">📧</span>
+                    <span>Email Templates</span>
+                </button>
+
+                <!-- Logs Section -->
+                <div class="px-3 py-2 mt-4">
+                    <p class="text-[10px] font-bold uppercase tracking-widest text-gray-400">Logs</p>
+                </div>
+                <button onclick="switchTab('activity')"
+                    class="sidebar-link w-full text-left px-4 py-3 rounded-xl text-gray-600 flex items-center gap-3 font-medium">
+                    <span class="text-xl">📜</span>
+                    <span>Activity Log</span>
+                </button>
+                <button onclick="switchTab('errors')"
+                    class="sidebar-link w-full text-left px-4 py-3 rounded-xl text-gray-600 flex items-center gap-3 font-medium">
+                    <span class="text-xl">🚨</span>
+                    <span>Errors</span>
+                    <span id="error-count-badge"
+                        class="ml-auto bg-red-500 text-white text-xs px-2 py-0.5 rounded-full hidden">0</span>
+                </button>
+            </nav>
+
+            <!-- Footer Actions -->
+            <div class="p-4 border-t border-gray-100 space-y-2">
+                <button onclick="toggleTheme()" id="theme-toggle-btn"
+                    class="w-full text-left px-4 py-3 text-gray-600 hover:bg-gray-100 rounded-xl text-sm font-medium flex items-center gap-3 transition-all">
+                    <span class="text-xl" id="theme-icon">🌙</span>
+                    <span id="theme-label">Dark Mode</span>
+                </button>
+                <button onclick="logout()"
+                    class="w-full text-left px-4 py-3 text-red-500 hover:bg-red-50 rounded-xl text-sm font-medium flex items-center gap-3 transition-all">
+                    <span class="text-xl">🚪</span>
+                    <span>Logout</span>
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-grow admin-bg flex flex-col h-full overflow-hidden relative">
+            <!-- Premium Header -->
+            <header class="glass border-b border-gray-200/50 px-8 py-5 flex justify-between items-center z-10">
+                <div>
+                    <h2 id="page-title" class="text-2xl font-bold text-gray-900 tracking-tight">Overview</h2>
+                    <p class="text-sm text-gray-500 mt-0.5">Welcome back, Admin</p>
+                </div>
+
+                <!-- Stats Row -->
+                <div class="flex gap-4">
+                    <div class="stat-card stat-card-purple px-5 py-3 flex items-center gap-4 min-w-[160px]">
+                        <span class="text-2xl">💰</span>
+                        <div>
+                            <p class="text-gray-500 text-xs font-medium uppercase tracking-wide">Revenue</p>
+                            <p class="font-bold text-lg text-black dark:text-white" id="stat-revenue">-</p>
+                        </div>
+                    </div>
+                    <div class="stat-card stat-card-cyan px-5 py-3 flex items-center gap-4 min-w-[140px]"
+                        id="stat-users-card" style="display:none;">
+                        <span class="text-2xl">👥</span>
+                        <div>
+                            <p class="text-gray-500 text-xs font-medium uppercase tracking-wide">Users</p>
+                            <p class="font-bold text-lg text-black dark:text-white" id="stat-users">-</p>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Scrollable Content -->
+            <div id="content-scroll-area" class="flex-grow overflow-auto p-8">
+                <!-- Dynamic Content Injected Here -->
+                <div id="content-area" class="max-w-7xl mx-auto space-y-6 animate-fade-in-up"></div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modals -->
+    <!-- Plan Modal -->
+    <div id="plan-modal" class="fixed inset-0 hidden items-center justify-center modal-overlay z-50 p-4">
+        <div
+            class="glass-card rounded-3xl w-full max-w-2xl shadow-2xl flex flex-col max-h-[90vh] overflow-hidden animate-fade-in-up border border-white/20">
+            <div
+                class="px-6 py-5 border-b border-gray-200/50 dark:border-gray-700/50 flex justify-between items-center bg-gradient-to-r from-primary-50 to-purple-50 dark:from-gray-800 dark:to-slate-800">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-primary-500 flex items-center justify-center">
+                        <i class="fa-solid fa-box-open text-white"></i>
+                    </div>
+                    <h3 class="font-bold text-xl text-gray-900 dark:text-white" id="plan-modal-title">Edit Plan</h3>
+                </div>
+                <button onclick="closeModal('plan-modal')"
+                    class="w-8 h-8 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 flex items-center justify-center text-gray-500 hover:text-gray-700 transition-all">
+                    <i class="fa-solid fa-times"></i>
+                </button>
+            </div>
+
+            <div class="flex-grow overflow-y-auto p-6">
+                <form id="admin-plan-form" onsubmit="savePlan(event)" class="space-y-6">
+                    <input type="hidden" id="plan-id">
+
+                    <!-- Top Row -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-500 uppercase mb-2">Internal ID
+                                (Slug)</label>
+                            <input type="text" id="display-plan-id"
+                                class="w-full bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg p-2.5 text-sm font-mono focus:bg-white dark:focus:bg-gray-800 dark:text-white focus:ring-2 focus:ring-black dark:focus:ring-white outline-none transition-all"
+                                placeholder="e.g. quarterly-pro">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-500 uppercase mb-2">Category</label>
+                            <select id="plan-category"
+                                class="w-full bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg p-2.5 text-sm outline-none focus:ring-2 focus:ring-black dark:focus:ring-white dark:text-white">
+                                <!-- Populated Dynamically -->
+                            </select>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-500 uppercase mb-2">Display Name</label>
+                        <input type="text" id="plan-name"
+                            class="w-full bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg p-2.5 text-lg font-medium focus:ring-2 focus:ring-black dark:focus:ring-white dark:text-white outline-none"
+                            placeholder="e.g. Annual Growth Plan" required oninput="generatePlanSlug(this.value)">
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-500 uppercase mb-2">Original
+                                Price</label>
+                            <input type="number" id="plan-price-orig"
+                                class="w-full bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg p-2.5 outline-none focus:ring-2 focus:ring-black dark:focus:ring-white dark:text-gray-300"
+                                placeholder="0">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-500 uppercase mb-2">Monthly
+                                Amount</label>
+                            <div class="flex gap-2">
+                                <input type="number" id="plan-price-disc"
+                                    class="w-full bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg p-2.5 font-bold text-green-600 dark:text-green-400 outline-none focus:ring-2 focus:ring-black dark:focus:ring-white"
+                                    required placeholder="0">
+                                <input type="color" id="plan-price-color"
+                                    class="h-10 w-10 p-1 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg cursor-pointer"
+                                    title="Price Color">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-500 uppercase mb-2">Renewal
+                                Period</label>
+                            <div class="flex gap-2">
+                                <input type="number" id="plan-period-value"
+                                    class="w-20 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg p-2.5 text-center outline-none focus:ring-2 focus:ring-black dark:focus:ring-white dark:text-white"
+                                    placeholder="1" min="1" required>
+                                <select id="plan-period-unit"
+                                    class="flex-1 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg p-2.5 bg-white outline-none focus:ring-2 focus:ring-black dark:focus:ring-white dark:text-white">
+                                    <option value="day">Day(s)</option>
+                                    <option value="week">Week(s)</option>
+                                    <option value="month">Month(s)</option>
+                                    <option value="year">Year(s)</option>
+                                </select>
+                            </div>
+                            <!-- Hidden input for backward compatibility/server -->
+                            <input type="hidden" id="plan-billing-cycle">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-500 uppercase mb-2">Sort Order</label>
+                            <input type="number" id="plan-order" class="w-full border border-gray-200 rounded-lg p-2.5"
+                                required value="0">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-500 uppercase mb-2">Razorpay Plan ID</label>
+                        <input type="text" id="plan-rzp-id"
+                            class="w-full bg-blue-50/50 dark:bg-blue-900/20 border border-blue-100 dark:border-blue-800 text-blue-800 dark:text-blue-300 rounded-lg p-2.5 font-mono text-sm"
+                            placeholder="plan_..." required>
+                    </div>
+
+                    <!-- Visual Feature Editor -->
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-500 uppercase mb-2 flex justify-between">
+                            <span>Features</span>
+                            <button type="button" onclick="addFeatureRow()"
+                                class="text-blue-600 hover:underline text-xs">+ Add Feature</button>
+                        </label>
+                        <div id="features-container"
+                            class="space-y-2 max-h-48 overflow-y-auto border border-gray-100 dark:border-gray-700/50 rounded-lg p-2 bg-gray-50/50 dark:bg-gray-900/50">
+                            <!-- Feature Rows -->
+                        </div>
+                        <textarea id="plan-features-json" class="hidden"></textarea> <!-- Hidden Backup -->
+                    </div>
+
+                    <div
+                        class="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-900 border border-gray-100 dark:border-gray-700 rounded-lg">
+                        <input type="checkbox" id="plan-active"
+                            class="w-5 h-5 text-black rounded focus:ring-black border-gray-300">
+                        <label for="plan-active"
+                            class="text-sm font-medium text-gray-700 dark:text-gray-300 select-none">Plan is Active
+                            and Visible</label>
+                    </div>
+                </form>
+            </div>
+
+            <div
+                class="p-5 border-t border-gray-200/50 dark:border-gray-700/50 bg-gradient-to-r from-gray-50 to-slate-50 dark:from-gray-900 dark:to-slate-900 flex justify-end gap-3">
+                <button onclick="closeModal('plan-modal')"
+                    class="px-6 py-3 rounded-xl text-gray-600 font-medium hover:bg-white hover:shadow-md border border-gray-200 transition-all">Cancel</button>
+                <button type="submit" form="admin-plan-form" id="btn-save-plan"
+                    class="btn-primary px-8 py-3 rounded-xl text-white font-semibold">
+                    <i class="fa-solid fa-check mr-2"></i>Save Plan
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Category Modal -->
+    <div id="category-modal" class="fixed inset-0 hidden items-center justify-center modal-overlay z-50 p-4">
+        <div
+            class="glass-card rounded-3xl w-full max-w-sm shadow-2xl overflow-hidden animate-fade-in-up border border-white/20">
+            <div
+                class="px-6 py-5 border-b border-gray-200/50 dark:border-gray-700/50 flex justify-between items-center bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-900/40 dark:to-orange-900/40">
+                <div class="w-10 h-10 rounded-xl bg-amber-500 flex items-center justify-center">
+                    <i class="fa-solid fa-tags text-white"></i>
+                </div>
+                <h3 class="font-bold text-xl text-gray-900 dark:text-white">Add New Category</h3>
+            </div>
+            <form id="category-form" onsubmit="saveCategory(event)" class="p-6 space-y-5">
+                <div>
+                    <label class="block text-xs font-semibold text-gray-500 uppercase mb-1">Display Name</label>
+                    <input type="text" id="cat-name"
+                        class="w-full bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 dark:text-white rounded-lg p-2.5 focus:ring-2 focus:ring-black dark:focus:ring-white outline-none"
+                        required placeholder="e.g. Enterprise Solutions" oninput="generateSlug(this.value)">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-gray-500 uppercase mb-1">Slug ID</label>
+                    <input type="text" id="cat-id"
+                        class="w-full bg-gray-50 border border-gray-200 rounded-lg p-2.5 text-sm font-mono text-gray-600"
+                        required readonly>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-gray-500 uppercase mb-1">Icon (Emoji)</label>
+                    <div class="relative group">
+                        <input type="text" id="cat-icon"
+                            class="w-full border border-gray-200 rounded-lg p-2.5 focus:ring-2 focus:ring-black outline-none"
+                            placeholder="e.g. 🚀" readonly onclick="toggleCatEmojiPicker(this)">
+
+                        <!-- Category Emoji Picker -->
+                        <div id="cat-emoji-popover"
+                            class="absolute bottom-full left-0 mb-2 shadow-2xl rounded-xl hidden z-50 border border-gray-100 bg-white overflow-hidden"
+                            style="width: 320px; height: 350px;">
+                            <emoji-picker class="w-full h-full"></emoji-picker>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-gray-500 uppercase mb-1">Tagline</label>
+                    <input type="text" id="cat-tagline"
+                        class="w-full border border-gray-200 rounded-lg p-2.5 focus:ring-2 focus:ring-black outline-none"
+                        placeholder="e.g. For large businesses">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-gray-500 uppercase mb-1">Order</label>
+                    <input type="number" id="cat-order" class="w-full border border-gray-200 rounded-lg p-2.5"
+                        value="1">
+                </div>
+                <div class="pt-6 flex justify-end gap-3 border-t border-gray-100 dark:border-gray-700">
+                    <button type="button" onclick="closeModal('category-modal')"
+                        class="px-5 py-2.5 rounded-xl text-gray-600 font-medium hover:bg-gray-100 border border-gray-200 transition-all">Cancel</button>
+                    <button type="submit" class="btn-primary px-6 py-2.5 rounded-xl text-white font-semibold">
+                        <i class="fa-solid fa-plus mr-2"></i>Create
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="public/js/admin.js"></script>
+    <script src="public/js/admin-utils.js"></script>
+    <script src="public/js/admin-render.js"></script>
+    <script src="public/js/admin-modals.js"></script>
+
+    <!-- Approval Modal -->
+    <div id="approval-modal"
+        class="fixed inset-0 z-[100] hidden items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+        <div
+            class="bg-white rounded-2xl shadow-2xl w-full max-w-6xl h-[90vh] flex flex-col overflow-hidden animate-fade-in-up">
+            <div class="p-6 border-b border-gray-100 flex justify-between items-center">
+                <div>
+                    <h3 class="text-xl font-bold text-gray-800">Approve & Send Invoice</h3>
+                    <p class="text-sm text-gray-500">Review the auto-generated invoice before sending.</p>
+                </div>
+                <button onclick="closeModal('approval-modal')" class="text-gray-400 hover:text-gray-600"><i
+                        class="fa-solid fa-times text-xl"></i></button>
+            </div>
+
+            <div class="flex-1 flex overflow-hidden">
+                <!-- Preview -->
+                <div class="w-1/2 bg-gray-100 border-r border-gray-200">
+                    <iframe id="approval-iframe" class="w-full h-full" src=""></iframe>
+                </div>
+
+                <!-- Controls -->
+                <div class="w-1/2 p-6 flex flex-col overflow-y-auto">
+                    <input type="hidden" id="approval-inv-id">
+
+                    <div class="grid grid-cols-2 gap-4 mb-6">
+                        <div>
+                            <label class="block text-xs font-bold text-gray-500 uppercase mb-2">Customer</label>
+                            <div class="font-medium text-gray-900" id="approval-customer">Loading...</div>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-gray-500 uppercase mb-2">Total Amount</label>
+                            <div class="text-2xl font-bold text-indigo-600" id="approval-amount">₹0.00</div>
+                        </div>
+                    </div>
+
+                    <div class="space-y-4 mb-6">
+                        <div>
+                            <label class="block text-xs font-bold text-gray-500 uppercase mb-2">Email Template</label>
+                            <select id="approval-template-select" onchange="applyTemplate()"
+                                class="w-full border rounded-lg p-2.5 focus:ring-2 focus:ring-blue-500 outline-none bg-white">
+                                <option value="">Select a template...</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-gray-500 uppercase mb-2">Email Subject</label>
+                            <input type="text" id="approval-subject"
+                                class="w-full border rounded-lg p-2.5 focus:ring-2 focus:ring-blue-500 outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-gray-500 uppercase mb-2">
+                                Email Body <span class="text-gray-400 font-normal normal-case">(Variables:
+                                    {{customer_name}}, {{invoice_number}}, {{total}}, {{due_date}})</span>
+                            </label>
+                            <textarea id="approval-body" rows="12"
+                                class="w-full border rounded-lg p-2.5 focus:ring-2 focus:ring-blue-500 outline-none font-mono text-sm"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="mt-auto flex flex-col gap-3 pt-4 border-t border-gray-100">
+                        <button onclick="approveAndSend()"
+                            class="w-full btn-primary text-white py-3 rounded-xl font-bold shadow-lg flex justify-center items-center gap-2">
+                            <i class="fa-solid fa-paper-plane"></i> Approve & Send Email
+                        </button>
+                        <button onclick="closeModal('approval-modal')"
+                            class="w-full py-3 bg-gray-100 text-gray-600 rounded-xl font-bold hover:bg-gray-200">
+                            Cancel
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- User Modal -->
+    <div id="user-modal"
+        class="fixed inset-0 z-[100] hidden items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+        <div
+            class="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden animate-fade-in-up border border-gray-100 dark:border-gray-700">
+            <div
+                class="p-6 border-b border-gray-100 dark:border-gray-700 flex justify-between items-center text-gray-900 dark:text-white">
+                <h3 id="user-modal-title" class="text-xl font-bold">Edit User Details</h3>
+                <button onclick="closeModal('user-modal')"
+                    class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200">
+                    <i class="fa-solid fa-times text-xl"></i>
+                </button>
+            </div>
+            <form id="admin-user-form" onsubmit="saveUserDetails(event)" class="p-6 space-y-4">
+                <input type="hidden" id="edit-user-id">
+                <div>
+                    <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Email <span
+                            class="text-red-500">*</span></label>
+                    <input type="email" id="edit-user-email" required
+                        class="w-full bg-white dark:bg-gray-900 border dark:border-gray-700 dark:text-white rounded-lg p-2.5 focus:ring-2 focus:ring-blue-500 outline-none"
+                        placeholder="user@example.com">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Full Name <span
+                            class="text-red-500">*</span></label>
+                    <input type="text" id="edit-user-name" required
+                        class="w-full bg-white dark:bg-gray-900 border dark:border-gray-700 dark:text-white rounded-lg p-2.5 focus:ring-2 focus:ring-blue-500 outline-none">
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Phone</label>
+                        <input type="text" id="edit-user-phone"
+                            class="w-full bg-white dark:bg-gray-900 border dark:border-gray-700 dark:text-white rounded-lg p-2.5 focus:ring-2 focus:ring-blue-500 outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-500 uppercase mb-1">GSTIN</label>
+                        <input type="text" id="edit-user-gstin"
+                            class="w-full bg-white dark:bg-gray-900 border dark:border-gray-700 dark:text-white rounded-lg p-2.5 focus:ring-2 focus:ring-blue-500 outline-none uppercase font-mono">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Address</label>
+                    <input type="text" id="edit-user-address"
+                        class="w-full bg-white dark:bg-gray-900 border dark:border-gray-700 dark:text-white rounded-lg p-2.5 focus:ring-2 focus:ring-blue-500 outline-none"
+                        placeholder="Street address">
+                </div>
+                <div class="grid grid-cols-3 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold text-gray-500 uppercase mb-1">City</label>
+                        <input type="text" id="edit-user-city"
+                            class="w-full bg-white dark:bg-gray-900 border dark:border-gray-700 dark:text-white rounded-lg p-2.5 outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-500 uppercase mb-1">State</label>
+                        <input type="text" id="edit-user-state"
+                            class="w-full bg-white dark:bg-gray-900 border dark:border-gray-700 dark:text-white rounded-lg p-2.5 outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Pincode</label>
+                        <input type="text" id="edit-user-pincode"
+                            class="w-full bg-white dark:bg-gray-900 border dark:border-gray-700 dark:text-white rounded-lg p-2.5 outline-none">
+                    </div>
+                </div>
+                <p class="text-xs text-gray-400"><i class="fa-solid fa-info-circle mr-1"></i>Address details will appear
+                    on invoices generated for this user.</p>
+                <div class="pt-4 flex justify-end gap-3">
+                    <button type="button" onclick="closeModal('user-modal')"
+                        class="px-5 py-2.5 bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 font-medium rounded-xl hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors">Cancel</button>
+                    <button type="submit"
+                        class="px-5 py-2.5 bg-blue-600 text-white font-bold rounded-xl hover:bg-blue-700 shadow-lg shadow-blue-200 dark:shadow-none">Save
+                        Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Customer Modal -->
+    <div id="customer-modal"
+        class="fixed inset-0 z-[100] hidden items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden animate-fade-in-up">
+            <div class="p-6 border-b border-gray-100 flex justify-between items-center">
+                <h3 id="modal-cust-title" class="text-xl font-bold text-gray-800">New Customer</h3>
+                <button onclick="closeModal('customer-modal')" class="text-gray-400 hover:text-gray-600"><i
+                        class="fa-solid fa-times text-xl"></i></button>
+            </div>
+            <form id="customer-form" onsubmit="saveCustomer(event)" class="p-6 space-y-4">
+                <input type="hidden" id="cust-id" name="id">
+                <div>
+                    <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Company / Name</label>
+                    <input type="text" id="cust-name" name="name" required
+                        class="w-full border rounded-lg p-2.5 focus:ring-2 focus:ring-blue-500 outline-none">
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Email</label>
+                        <input type="email" id="cust-email" name="email"
+                            class="w-full border rounded-lg p-2.5 focus:ring-2 focus:ring-blue-500 outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Phone</label>
+                        <input type="text" id="cust-phone" name="phone"
+                            class="w-full border rounded-lg p-2.5 focus:ring-2 focus:ring-blue-500 outline-none">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-gray-500 uppercase mb-1">GSTIN (Optional)</label>
+                    <input type="text" id="cust-gstin" name="gstin"
+                        class="w-full border rounded-lg p-2.5 focus:ring-2 focus:ring-blue-500 outline-none font-mono placeholder:font-sans"
+                        placeholder="22AAAAA0000A1Z5">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Address</label>
+                    <textarea id="cust-address" name="address" rows="2"
+                        class="w-full border rounded-lg p-2.5 focus:ring-2 focus:ring-blue-500 outline-none"></textarea>
+                </div>
+                <div class="grid grid-cols-3 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold text-gray-500 uppercase mb-1">City</label>
+                        <input type="text" id="cust-city" name="city"
+                            class="w-full border rounded-lg p-2.5 outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-500 uppercase mb-1">State</label>
+                        <input type="text" id="cust-state" name="state"
+                            class="w-full border rounded-lg p-2.5 outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Pincode</label>
+                        <input type="text" id="cust-pincode" name="pincode"
+                            class="w-full border rounded-lg p-2.5 outline-none">
+                    </div>
+                </div>
+                <div class="pt-4 flex justify-end gap-3">
+                    <button type="button" onclick="closeModal('customer-modal')"
+                        class="px-5 py-2.5 bg-gray-100 text-gray-600 font-medium rounded-xl hover:bg-gray-200">Cancel</button>
+                    <button type="submit"
+                        class="px-5 py-2.5 bg-blue-600 text-white font-bold rounded-xl hover:bg-blue-700 shadow-lg shadow-blue-200">Save
+                        Customer</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Invoice Modal -->
+    <div id="invoice-modal"
+        class="fixed inset-0 z-[100] hidden items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto animate-fade-in-up">
+            <div class="p-6 border-b border-gray-100 flex justify-between items-center sticky top-0 bg-white z-10">
+                <h3 id="modal-inv-title" class="text-xl font-bold text-gray-800">New Invoice</h3>
+                <button onclick="closeModal('invoice-modal')" class="text-gray-400 hover:text-gray-600"><i
+                        class="fa-solid fa-times text-xl"></i></button>
+            </div>
+            <form id="invoice-form" onsubmit="saveInvoice(event)" class="p-6 space-y-6">
+                <input type="hidden" id="inv-id">
+
+                <!-- Header Info -->
+                <div class="grid md:grid-cols-3 gap-6">
+                    <div>
+                        <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Invoice #</label>
+                        <input type="text" id="inv-number"
+                            class="w-full bg-white border rounded-lg p-2.5 font-mono font-bold text-gray-700 focus:ring-2 focus:ring-blue-500 outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Invoice Date</label>
+                        <input type="date" id="inv-date" required
+                            class="w-full border rounded-lg p-2.5 focus:ring-2 focus:ring-blue-500 outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Due Date</label>
+                        <input type="date" id="inv-due-date" required
+                            class="w-full border rounded-lg p-2.5 focus:ring-2 focus:ring-blue-500 outline-none">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Customer</label>
+                    <select id="inv-customer" required
+                        class="w-full border rounded-lg p-2.5 bg-white focus:ring-2 focus:ring-blue-500 outline-none">
+                        <option value="">Select Customer</option>
+                    </select>
+                </div>
+
+                <!-- HSN Datalist -->
+                <datalist id="hsn-codes">
+                    <option value="998311">Management consulting</option>
+                    <option value="998313">IT consulting/support</option>
+                    <option value="998314">IT design/development</option>
+                    <option value="998315">Hosting/Infrastructure</option>
+                    <option value="998316">Network management</option>
+                    <option value="998319">Other IT services</option>
+                </datalist>
+
+                <!-- Line Items -->
+                <div>
+                    <div class="flex justify-between items-center mb-2">
+                        <label class="block text-xs font-bold text-gray-500 uppercase">Line Items</label>
+                        <button type="button" onclick="addItemRow()"
+                            class="text-xs text-blue-600 font-bold hover:underline">+ Add Item</button>
+                    </div>
+                    <div class="bg-gray-50 rounded-xl p-4 border border-gray-200">
+                        <div class="grid grid-cols-12 gap-2 text-xs font-bold text-gray-500 uppercase mb-2 px-1">
+                            <div class="col-span-4">Description</div>
+                            <div class="col-span-2">HSN</div>
+                            <div class="col-span-2">Qty</div>
+                            <div class="col-span-2">Rate</div>
+                            <div class="col-span-1 text-right">Amount</div>
+                            <div class="col-span-1"></div>
+                        </div>
+                        <div id="invoice-items-container" class="space-y-2">
+                            <!-- Items Injected Here -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Totals -->
+                <div class="flex justify-end">
+                    <div class="w-72 space-y-2">
+                        <div class="flex justify-between text-sm">
+                            <span class="text-gray-500">Subtotal:</span>
+                            <span class="font-bold text-gray-800" id="inv-subtotal">₹0.00</span>
+                        </div>
+                        <div class="flex justify-between text-sm items-center">
+                            <span class="text-gray-500">CGST Rate (%):</span>
+                            <input type="number" id="inv-cgst-rate" value="9" min="0" step="0.5"
+                                class="w-16 border rounded p-1 text-right text-xs" onchange="updateInvoiceTotals()">
+                        </div>
+                        <div class="flex justify-between text-sm items-center">
+                            <span class="text-gray-500">SGST Rate (%):</span>
+                            <input type="number" id="inv-sgst-rate" value="9" min="0" step="0.5"
+                                class="w-16 border rounded p-1 text-right text-xs" onchange="updateInvoiceTotals()">
+                        </div>
+                        <div class="flex justify-between text-sm items-center">
+                            <span class="text-gray-500">IGST Rate (%):</span>
+                            <input type="number" id="inv-igst-rate" value="0" min="0" step="0.5"
+                                class="w-16 border rounded p-1 text-right text-xs" onchange="updateInvoiceTotals()">
+                        </div>
+                        <div class="flex justify-between text-sm pt-2 border-t border-dashed">
+                            <span class="text-gray-500">Total Tax:</span>
+                            <span class="font-bold text-gray-800" id="inv-tax-amount">₹0.00</span>
+                        </div>
+                        <div class="flex justify-between text-lg font-bold border-t pt-2 mt-2">
+                            <span>Total:</span>
+                            <span class="text-blue-600" id="inv-total">₹0.00</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="pt-4 flex justify-end gap-3 border-t border-gray-100">
+                    <button type="button" onclick="closeModal('invoice-modal')"
+                        class="px-5 py-2.5 bg-gray-100 text-gray-600 font-medium rounded-xl hover:bg-gray-200">Cancel</button>
+                    <button type="submit"
+                        class="px-5 py-2.5 bg-emerald-600 text-white font-bold rounded-xl hover:bg-emerald-700 shadow-lg shadow-emerald-200">Save
+                        Invoice</button>
+                </div>
+            </form>
+        </div>
+        <!-- Razorpay Plan Modal -->
+        <div id="razorpay-plan-modal"
+            class="fixed inset-0 z-[100] hidden items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+            <div class="glass-card rounded-2xl shadow-2xl w-full max-w-lg animate-fade-in-up border border-white/20">
+                <div class="p-6 border-b border-gray-100/50 flex justify-between items-center bg-white/50">
+                    <h3 class="text-xl font-bold text-gray-800">Create Razorpay Plan</h3>
+                    <button onclick="closeModal('razorpay-plan-modal')" class="text-gray-400 hover:text-gray-600">
+                        <i class="fa-solid fa-times text-xl"></i>
+                    </button>
+                </div>
+                <form onsubmit="createRazorpayPlan(event)" class="p-6 space-y-4">
+                    <div>
+                        <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Plan Name</label>
+                        <input type="text" name="name" required
+                            class="w-full border rounded-lg p-2.5 outline-none focus:ring-2 focus:ring-blue-500"
+                            placeholder="e.g. Gold Monthly">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Amount (INR)</label>
+                        <input type="number" name="amount" required min="1"
+                            class="w-full border rounded-lg p-2.5 outline-none focus:ring-2 focus:ring-blue-500"
+                            placeholder="499">
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Period</label>
+                            <select name="period" class="w-full border rounded-lg p-2.5 outline-none bg-white">
+                                <option value="daily">Daily</option>
+                                <option value="weekly">Weekly</option>
+                                <option value="monthly" selected>Monthly</option>
+                                <option value="yearly">Yearly</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Interval</label>
+                            <input type="number" name="interval" value="1" min="1"
+                                class="w-full border rounded-lg p-2.5 outline-none">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Description</label>
+                        <textarea name="description" rows="2"
+                            class="w-full border rounded-lg p-2.5 outline-none"></textarea>
+                    </div>
+                    <div class="pt-4 flex justify-end">
+                        <button type="submit"
+                            class="px-6 py-2.5 bg-blue-600 text-white font-bold rounded-xl hover:bg-blue-700 shadow-lg">Create
+                            Plan</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

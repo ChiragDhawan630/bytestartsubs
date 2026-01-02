@@ -1,0 +1,21 @@
+{
+    "name": "ByteStart Plans",
+    "short_name": "ByteStart",
+    "description": "Choose the perfect package to elevate your digital presence.",
+    "start_url": "/index.html",
+    "display": "standalone",
+    "background_color": "#ffffff",
+    "theme_color": "#2563eb",
+    "icons": [
+        {
+            "src": "https://bytestarttechnologies.com/wp-content/uploads/2024/10/cropped-Circle-512x512-Logo-modified.png",
+            "sizes": "192x192",
+            "type": "image/png"
+        },
+        {
+            "src": "https://bytestarttechnologies.com/wp-content/uploads/2024/10/cropped-Circle-512x512-Logo-modified.png",
+            "sizes": "512x512",
+            "type": "image/png"
+        }
+    ]
+}

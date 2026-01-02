@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile - ByteStart Technologies</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        /* Dark Theme */
+        html.dark body {
+            background-color: #0f172a;
+            color: #e2e8f0;
+        }
+
+        html.dark header {
+            background: #1e293b;
+            border-color: #334155;
+        }
+
+        html.dark .bg-white {
+            background-color: #1e293b;
+        }
+
+        html.dark .bg-gray-50 {
+            background-color: #0f172a;
+        }
+
+        html.dark .text-gray-900 {
+            color: #f1f5f9;
+        }
+
+        html.dark .text-gray-700,
+        html.dark .text-gray-600,
+        html.dark .text-gray-500 {
+            color: #94a3b8;
+        }
+
+        html.dark .border-gray-200,
+        html.dark .border-gray-300 {
+            border-color: #334155;
+        }
+
+        html.dark input {
+            background-color: #0f172a;
+            border-color: #334155;
+            color: #e2e8f0;
+        }
+
+        html.dark .bg-gray-100 {
+            background-color: #334155;
+        }
+
+        /* Toggle Switch */
+        .toggle-switch {
+            position: relative;
+            width: 50px;
+            height: 26px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: 0.4s;
+            border-radius: 26px;
+        }
+
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 20px;
+            width: 20px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: 0.4s;
+            border-radius: 50%;
+        }
+
+        input:checked+.toggle-slider {
+            background-color: #2563eb;
+        }
+
+        input:checked+.toggle-slider:before {
+            transform: translateX(24px);
+        }
+    </style>
+</head>
+
+<body class="bg-gray-50 text-gray-800">
+
+    <header class="bg-white border-b border-gray-200 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
+            <a href="/" class="text-xl font-bold text-gray-900">ByteStart</a>
+            <a href="/logout" class="text-red-600 font-medium hover:underline">Logout</a>
+        </div>
+    </header>
+
+    <main class="max-w-4xl mx-auto px-4 py-12 space-y-8">
+        <!-- User Info Form -->
+        <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-8">
+            <div class="flex items-center gap-6 mb-8">
+                <img id="user-avatar" src="" alt="Avatar" class="w-20 h-20 rounded-full bg-gray-200">
+                <div>
+                    <h1 id="user-name-display" class="text-2xl font-bold text-gray-900">Loading...</h1>
+                    <p id="user-email-display" class="text-gray-500">...</p>
+                </div>
+            </div>
+
+            <form id="profile-form" onsubmit="updateProfile(event)" class="grid md:grid-cols-2 gap-6">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
+                    <input type="text" id="input-name"
+                        class="w-full rounded-lg border-gray-300 border p-2 focus:ring-2 focus:ring-blue-500 outline-none">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Preferred Mobile No.</label>
+                    <input type="tel" id="input-phone" placeholder="+91..."
+                        class="w-full rounded-lg border-gray-300 border p-2 focus:ring-2 focus:ring-blue-500 outline-none">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Alternate Mobile No.</label>
+                    <input type="tel" id="input-alt-phone" placeholder="Optional"
+                        class="w-full rounded-lg border-gray-300 border p-2 focus:ring-2 focus:ring-blue-500 outline-none">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">GSTIN (Optional)</label>
+                    <input type="text" id="input-gstin" placeholder="GSTIN Number"
+                        class="w-full rounded-lg border-gray-300 border p-2 focus:ring-2 focus:ring-blue-500 outline-none uppercase">
+                </div>
+                <div class="md:col-span-2">
+                    <button type="submit"
+                        class="bg-blue-600 text-white px-6 py-2 rounded-lg font-medium hover:bg-blue-700 transition-colors">
+                        Save Changes
+                    </button>
+                    <span id="save-msg" class="ml-3 text-sm text-green-600 hidden">Saved successfully!</span>
+                </div>
+            </form>
+        </div>
+
+        <!-- Appearance Settings -->
+        <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-8">
+            <h2 class="text-xl font-bold text-gray-900 mb-6">Appearance</h2>
+            <div class="flex items-center justify-between">
+                <div>
+                    <h3 class="font-medium text-gray-900">Dark Mode</h3>
+                    <p class="text-sm text-gray-500">Switch to dark theme for comfortable viewing</p>
+                </div>
+                <label class="toggle-switch">
+                    <input type="checkbox" id="theme-toggle" onchange="toggleTheme()">
+                    <span class="toggle-slider"></span>
+                </label>
+            </div>
+        </div>
+
+        <!-- Subscriptions -->
+        <div>
+            <h2 class="text-xl font-bold text-gray-900 mb-4">Active Subscriptions</h2>
+            <div id="subs-list" class="space-y-4">
+                <p class="text-gray-500">Loading subscriptions...</p>
+            </div>
+        </div>
+    </main>
+
+    <script src="public/js/profile.js"></script>
+</body>
+
+</html>

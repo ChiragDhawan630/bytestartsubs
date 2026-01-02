@@ -1,0 +1,99 @@
+# =============================================================================
+# ByteStart Subscription Platform - Docker Compose
+# =============================================================================
+# Deploy with: docker compose up -d
+# Compatible with: Coolify, aaPanel, Docker standalone
+#
+# Required environment variables (set in hosting panel or .env):
+#   - DB_PASSWORD          : PostgreSQL password
+#   - RAZORPAY_KEY_ID      : Razorpay API key
+#   - RAZORPAY_KEY_SECRET  : Razorpay API secret
+#   - GOOGLE_CLIENT_ID     : Google OAuth client ID
+#   - GOOGLE_CLIENT_SECRET : Google OAuth secret
+#   - SESSION_SECRET       : Express session secret
+#   - SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS : Email config
+# =============================================================================
+
+services:
+  # ---------------------------------------------------------------------------
+  # ByteStart Application
+  # ---------------------------------------------------------------------------
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: bytestart-app
+    ports:
+      - "${PORT:-3000}:3000"
+    environment:
+      # Database connection (uses internal Docker network)
+      - DATABASE_URL=postgresql://postgres:${DB_PASSWORD:-bytestart123}@db:5432/bytestart
+      - DATABASE_SSL=false
+      - APP_ENV=${APP_ENV:-prod}
+      
+      # Payment Gateway
+      - RAZORPAY_KEY_ID=${RAZORPAY_KEY_ID}
+      - RAZORPAY_KEY_SECRET=${RAZORPAY_KEY_SECRET}
+      
+      # Google OAuth
+      - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
+      - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET}
+      - GOOGLE_CALLBACK_URL=${GOOGLE_CALLBACK_URL:-http://localhost:3000/auth/google/callback}
+      
+      # Session
+      - SESSION_SECRET=${SESSION_SECRET:-change_this_in_production}
+      
+      # Email SMTP
+      - SMTP_HOST=${SMTP_HOST}
+      - SMTP_PORT=${SMTP_PORT:-465}
+      - SMTP_USER=${SMTP_USER}
+      - SMTP_PASS=${SMTP_PASS}
+      
+      # Admin
+      - ADMIN_EMAIL=${ADMIN_EMAIL}
+      - ADMIN_PASS=${ADMIN_PASS}
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+    networks:
+      - bytestart-network
+
+  # ---------------------------------------------------------------------------
+  # PostgreSQL Database
+  # ---------------------------------------------------------------------------
+  db:
+    image: postgres:16-alpine
+    container_name: bytestart-db
+    environment:
+      - POSTGRES_DB=bytestart
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=${DB_PASSWORD:-bytestart123}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d bytestart"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    restart: unless-stopped
+    networks:
+      - bytestart-network
+    # Uncomment to expose PostgreSQL externally (for debugging)
+    # ports:
+    #   - "5432:5432"
+
+# -----------------------------------------------------------------------------
+# Volumes (persistent data)
+# -----------------------------------------------------------------------------
+volumes:
+  postgres_data:
+    driver: local
+
+# -----------------------------------------------------------------------------
+# Networks
+# -----------------------------------------------------------------------------
+networks:
+  bytestart-network:
+    driver: bridge
